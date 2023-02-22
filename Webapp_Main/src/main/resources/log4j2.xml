@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<Configuration  status="debug" >
+
+  <Appenders>
+  
+  <!--  
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L)  %c - %m{nolookups}%n"/>
+    </Console>
+   -->
+   
+   <!-- This next appender is not working to create an output file -->
+   
+    <!-- Rolling File Appender -->
+    <RollingFile name="RollingFile">
+    	<!-- Compared to log4j, the system variable requires 'sys:' before it -->
+    			<!-- append '.current' to the filename so that Ubuntu does not compress the file (compresses files that end in .log).
+			Log4j2 will compress the file when it rolls over the file since '.gz' is at end of  -->
+		<!-- Filename used when create "current" file to log to  -->
+      <FileName>${sys:catalina.base}/logs/file_object_storage.log.current</FileName>
+      		<!-- Filename used when roll "current" file to and then create new "current" file.
+      					Log4j2 will compress the file when it rolls over the file since '.gz' is at end of  -->
+      <FilePattern>${sys:catalina.base}/logs/file_object_storage-%d{yyyy-MM-dd}.log.gz</FilePattern>
+      <PatternLayout>
+        <Pattern>%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %m{nolookups}%n</Pattern>
+      </PatternLayout>
+      <Policies>
+      		<!-- Roll over the log file based on time  -->
+        <TimeBasedTriggeringPolicy/>
+      </Policies>
+      <DefaultRolloverStrategy max="30" />
+    </RollingFile>
+        
+  </Appenders>
+  <Loggers>
+    <Logger name="org.apache.log4j.xml" level="debug"/>
+    
+    
+        <!--  These not work since not correct package name and/or class name -->
+    
+    <Logger name="org.yeastrc.spectral_storage.accept_import_web_app.process_uploaded_scan_file.main.ProcessNextUploadedScanFile"
+    	level="info"/>
+    
+    <Logger name="org.yeastrc.spectral_storage.spectral_file_common.spectral_file.check_if_spectral_file_exists.CheckIfSpectralFileAlreadyExists_LocalFilesystem"
+    	level="debug"/>
+    <Logger name="org.yeastrc.spectral_storage.spectral_file_common.spectral_file.check_if_spectral_file_exists.CheckIfSpectralFileAlreadyExists_S3_Object"
+    	level="debug"/>
+    	
+    <!--  INFO level logger example -->
+    <!-- 
+    <Logger name="XXX" level="info"/>
+    -->
+    <Root level="warn">
+      <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>

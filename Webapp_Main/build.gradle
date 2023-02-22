@@ -1,0 +1,217 @@
+/*
+ * Web App  for Accept_Import
+ *
+ * This build file was Copied from https://spring.io/guides/gs/serving-web-content/.
+ *
+ 	Task for building the war: 'build'
+ */
+
+ 	
+	//  http://ajoberstar.org/grgit/grgit-gradle.html
+	// Grgit: Generally, you should only apply the plugin to the root project of your build.
+	//  Plugin adds grgit property to your build, which is an instance of Grgit.
+	//     Plugin looks for .git directory in build directory and it's parents
+ 
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "org.ajoberstar.grgit:grgit-gradle:3.1.1"
+  }
+}
+
+plugins {
+	id 'java'
+	id 'war'
+	id 'eclipse'
+//	id "org.springframework.boot" version "2.0.1.RELEASE"
+//	id "io.spring.dependency-management" version "1.0.5.RELEASE"
+	//  moved to 'buildscript'. See Notes above	id 'org.ajoberstar.grgit' version '3.1.1'
+}
+
+apply plugin: "org.ajoberstar.grgit"
+
+repositories {
+    mavenCentral()
+}
+
+//  Default Task
+//    Comment out since creates infinite loop of building
+//  defaultTasks 'build'
+
+sourceCompatibility = 1.8     //  defaults to currently installed JVM
+// targetCompatibility = 1.8  //  defaults to sourceCompatibility
+
+
+configurations.all {
+//  Need all these excludes if using Spring Boot
+	//  Exclude default logger for Spring Boot 'logback'
+   exclude group:"ch.qos.logback", module:"logback-core"
+   exclude group:"ch.qos.logback", module:"logback-classic"
+   	//  Exclude Routing of log4j to slf4j since using opposite (slf4j to log4j) and including this would create a circular reference
+   exclude group:'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+//   exclude group:'org.apache.logging.log4j', module: 'log4j-api'
+}
+
+dependencies {
+
+//  Specify dependency on Projects in this repo (other dirs under main root dir)
+	
+	compile project(":Common_Webapp_Client_Connector_Library")
+	
+	
+	//  Mail
+	
+	// https://mvnrepository.com/artifact/javax.mail/mail
+	compile group: 'javax.mail', name: 'mail', version: '1.4.1'
+	
+	//  Later versions like this have license CDDL and GPL
+	// https://mvnrepository.com/artifact/javax.mail/javax.mail-api
+//	compile group: 'javax.mail', name: 'javax.mail-api', version: '1.6.1'
+	
+	//  Logging Log4j Version 2
+	
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.0'
+	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.0'	
+	compile group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.17.0' //  Needed for Web app
+	
+	// SLF4j
+	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
+	compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.17.0'
+	
+	//  Jakarta Commons Logging to SLF4J
+	compile group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.25'
+	
+	
+	//   Apache Commons
+	
+	//  Old StringUtils
+	// https://mvnrepository.com/artifact/commons-lang/commons-lang
+	compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+	
+	//  New StringUtils
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+	
+	// https://mvnrepository.com/artifact/commons-io/commons-io
+	compile group: 'commons-io', name: 'commons-io', version: '2.6'
+	
+	//  YAML reader
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml
+	implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.13.3'
+	
+	
+		// JAXB dependencies (Required for Java 11+)
+	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+	implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.2'
+	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
+	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
+	
+	
+    // https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core
+    providedCompile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '8.5.29'
+
+	//  
+	// https://mvnrepository.com/artifact/javax.servlet/servlet-api
+	//  Most current servlet spec:
+	providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+	
+	// https://mvnrepository.com/artifact/javax.servlet.jsp/javax.servlet.jsp-api
+	providedCompile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.3'
+	
+}
+
+/*
+ * Before the Gradle WAR processing creates the war, it deletes the output .war file to ensure it is always re-created 
+ */
+processResources.dependsOn 'deleteExistingBuiltWar'
+
+
+/*
+ * Before the Gradle WAR processing creates the war, it deletes the output .war file to ensure it is always re-created 
+ */
+
+task deleteExistingBuiltWar(type: GradleBuild) {
+  	
+  	println("Webapp Gradle build deleteExistingBuiltWar called - Before WAR created. Deletes the output .war file to ensure it is always re-created")
+  	
+	  	
+	//  from file settings.gradle
+	
+	//  Generated war name
+	//  rootProject.name = 'proxl' // value may be different, see file settings.gradle
+	  	
+  	println("project.name: ${project.name}")
+  	println("rootProject.name: ${rootProject.name}")
+  	
+  	String warFilename = "${rootProject.name}.war"
+  	
+  	String warFileInBuildLibs = "build/libs/" + warFilename
+  	
+  	println("Deleting the output .war file " + warFileInBuildLibs )
+  	  
+	delete warFileInBuildLibs
+}
+
+
+/*
+ * Before the Gradle WAR processing creates the war, create file under WEB-INF with GIT Hash 
+ */
+processResources.dependsOn 'createFileGitHash'
+
+/*
+ * Before the Gradle WAR processing creates the war, it deletes the output .war file to ensure it is always re-created 
+ */
+
+task createFileGitHash(type: GradleBuild) {
+  	doLast {
+	  	println("Webapp Gradle build createFileGitHash doLast called - Before WAR created. Create file under WEB-INF with GIT Hash ")
+				  	
+		//  Assign to grgit, created by plugin
+		def gitRepo = grgit
+		
+		
+		// def gitRepo = Grgit.open({
+		//  dir = ".."  //  Use parent directory since that is root of GIT repo
+		//  currentDir = <path>
+		//  credentials = <credentals>
+		// })
+
+		def gitHeadId = gitRepo.head().id
+		def gitCommit = gitRepo.head().getAbbreviatedId(8)
+		def gitBranch = gitRepo.branch.getCurrent().getName()
+		
+		//  Get tag at GIT HEAD: like git tag --points-at HEAD
+		def repoHead = gitRepo.head()
+		def repoHeadTag = gitRepo.tag.list().find {
+			it.commit == repoHead
+		}
+		def repoTagName = "NO GIT Tag at HEAD"
+		
+		if ( repoHeadTag ) {
+			println("GIT Tag at HEAD found")
+			repoTagName = repoHeadTag.getName()
+		}
+		
+		
+		println("gitHeadId: " + gitHeadId )
+		println("gitCommit: " + gitCommit )
+		println("gitBranch: " + gitBranch )
+		println("GIT Tag at HEAD: " + repoTagName )
+		
+		new File("$projectDir/src/main/resources/file_object_storage_version_from_build.properties").text = """
+
+#  Generated by the build
+
+Project-Title=${project.name}
+Branch=$gitBranch
+GIT-HASH=${gitCommit}
+GIT-Full-HASH=${gitHeadId}
+GIT-Repo-Tag-Name=${repoTagName}
+Buildtime=${new Date().format("yyyy-MM-dd HH:mm:ssZ")}
+		"""
+	}
+}

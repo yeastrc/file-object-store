@@ -1,0 +1,126 @@
+/*
+ *  Application 'Client_Connector_Library' folder
+ *
+ 	Build using shadowJar so contents of project 'Common_Webapp_Client_Connector_Library'
+ 	  are embedded in this jar so only have single "Client Connector" jar
+ 
+ 		defaultTasks 'shadowJar'
+ */
+
+/*
+    Build executable jar file with gradle shadowJar
+    More info at: https://imperceptiblethoughts.com/shadow/
+    
+    Requires Gradle 5+
+ */
+
+	//  http://ajoberstar.org/grgit/grgit-gradle.html
+	// Grgit: Generally, you should only apply the plugin to the root project of your build.
+	//  Plugin adds grgit property to your build, which is an instance of Grgit.
+	//     Plugin looks for .git directory in build directory and it's parents
+ 
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "org.ajoberstar.grgit:grgit-gradle:3.1.1"
+  }
+}
+
+plugins {
+	id 'com.github.johnrengelman.shadow' version '5.0.0'
+	//  moved to 'buildscript'. See Notes above	id 'org.ajoberstar.grgit' version '3.1.1'
+}
+
+apply plugin: 'java-library'
+
+apply plugin: "org.ajoberstar.grgit"
+
+sourceCompatibility = 1.8      //    defaults to currently installed JVM
+// targetCompatibility  = 1.8  //    defaults to sourceCompatibility
+
+repositories {
+    mavenCentral()
+}
+
+//  Set default task for this build.gradle file
+defaultTasks 'shadowJar'
+
+
+
+dependencies {
+
+//  Specify dependency on Projects in this repo (other dirs under main root dir)
+	
+	compile project(":Common_Webapp_Client_Connector_Library")
+	
+	// JAXB dependencies (Required for Java 11+)
+	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+	implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.2'
+	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
+	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
+
+
+}
+
+//  Assign to grgit, created by plugin
+def gitRepo = grgit
+
+
+// def gitRepo = Grgit.open({
+//  dir = ".."  //  Use parent directory since that is root of GIT repo
+//  currentDir = <path>
+//  credentials = <credentals>
+// })
+
+def gitHeadId = gitRepo.head().id
+def gitCommit = gitRepo.head().getAbbreviatedId(8)
+def gitBranch = gitRepo.branch.getCurrent().getName()
+
+//  Get tag at GIT HEAD: like git tag --points-at HEAD
+def repoHead = gitRepo.head()
+def repoHeadTag = gitRepo.tag.list().find {
+	it.commit == repoHead
+}
+def repoTagName = "NO GIT Tag at HEAD"
+
+if ( repoHeadTag ) {
+	println("GIT Tag at HEAD found")
+	repoTagName = repoHeadTag.getName()
+}
+
+
+println("gitHeadId: " + gitHeadId )
+println("gitCommit: " + gitCommit )
+println("gitBranch: " + gitBranch )
+println("GIT Tag at HEAD: " + repoTagName )
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'fake.not.really.a.runnable.jar'
+        attributes([ 'Project-Title': project.name,
+        			'Project-URL' : 'https://github.com/yeastrc/Spectral_Storage_Service',
+					'Build-Timestamp': new Date().format("yyyy-MM-dd HH:mm:ssZ"),
+					'Git-Commit': gitCommit,
+					'GIT-Full-HASH': gitHeadId,
+					'GIT-Tag-at-HEAD': repoTagName,
+					'Git-Branch': gitBranch ])
+    }
+}
+
+//  For creating runnable jar
+processResources {
+    from ('src/main/resources') {
+        include '**/*'
+    }
+}
+
+shadowJar {
+    baseName = 'file_object_store_client_connector_code'
+    classifier = null
+    version = null
+}
+

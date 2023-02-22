@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>Webservice - YRC File Object Store - Web App</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+<!--   JSON responses can be activated if change code and add Jackson Jars -->
+
+
+<!--   _________________________________________   -->
+
+<!--   Servlets - Health Check   -->
+
+  <servlet>
+    <servlet-name>Health Check</servlet-name>
+    <servlet-class>org.yeastrc.file_object_storage.web_app.servlets_healthcheck.HealthCheckServlet</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Health Check</servlet-name>
+    <url-pattern>/health-check</url-pattern>
+  </servlet-mapping>    
+
+  <!-- Upload File Process - Actual upload of File - return XML -->
+  
+  <servlet>
+    <servlet-name>Upload File Process - Actual upload of File Servlet - XML Response</servlet-name>
+    <servlet-class>org.yeastrc.file_object_storage.web_app.servlets_upload_file.UploadFile_UploadFile_Servlet</servlet-class>
+    	<!-- required parameter resultDataFormat -->
+    <init-param>
+      <param-name>resultDataFormat</param-name> <!-- Must be value in Java Class ServletResultDataFormatConstants -->
+      <param-value>XML</param-value> <!-- Must be value in Java Class ServletResultDataFormatConstants -->
+    </init-param>    
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Upload File Process - Actual upload of File Servlet - XML Response</servlet-name>
+    <url-pattern>/update/uploadFile_uploadFile_XML</url-pattern>
+  </servlet-mapping>   
+
+  <!-- Send S3 location of file to process - return XML -->
+  
+  <!--    AWS S3 Support commented out.  See file ZZ__AWS_S3_Support_CommentedOut.txt in GIT repo root.
+  
+  <servlet>
+    <servlet-name>Send S3 location of file to process Servlet - XML Response</servlet-name>
+    <servlet-class>org.yeastrc.file_object_storage.web_app.servlets_upload_file.UploadFile_AddFileInS3Bucket_Servlet</servlet-class>
+    	< ! - - required parameter resultDataFormat - - >
+    <init-param>
+      <param-name>resultDataFormat</param-name> < ! - - Must be value in Java Class ServletResultDataFormatConstants - - >
+      <param-value>XML</param-value> < ! - - Must be value in Java Class ServletResultDataFormatConstants - - >
+    </init-param>    
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Send S3 location of file to process Servlet - XML Response</servlet-name>
+    <url-pattern>/update/uploadFile_addFileInS3Bucket_XML</url-pattern>
+  </servlet-mapping>   
+
+-->  
+  
+  <!-- Send Filename with Path to process - return XML -->
+  
+  <servlet>
+    <servlet-name>Send Filename with Path to process Servlet - XML Response</servlet-name>
+    <servlet-class>org.yeastrc.file_object_storage.web_app.servlets_upload_file.UploadFile_AddFileFromFilenameAndPath_Servlet</servlet-class>
+    	<!-- required parameter resultDataFormat -->
+    <init-param>
+      <param-name>resultDataFormat</param-name> <!-- Must be value in Java Class ServletResultDataFormatConstants -->
+      <param-value>XML</param-value> <!-- Must be value in Java Class ServletResultDataFormatConstants -->
+    </init-param>    
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Send Filename with Path to process Servlet - XML Response</servlet-name>
+    <url-pattern>/update/uploadFile_addFilenameWithPath_XML</url-pattern>
+  </servlet-mapping>   
+  
+  
+  <!-- Get File Contents - return Response Header as XML -->
+  
+  <servlet>
+    <servlet-name>Get File Contents - Response Header as XML</servlet-name>
+    <servlet-class>org.yeastrc.file_object_storage.web_app.servlets_get_file.Get_StoredFileObjectContents_Servlet</servlet-class>
+    	<!-- required parameter resultDataFormat -->
+    <init-param>
+      <param-name>resultDataFormat</param-name> <!-- Must be value in Java Class ServletResultDataFormatConstants -->
+      <param-value>XML</param-value> <!-- Must be value in Java Class ServletResultDataFormatConstants -->
+    </init-param>    
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Get File Contents - Response Header as XML</servlet-name>
+    <url-pattern>/get/get_FileContents_XML</url-pattern>
+  </servlet-mapping>   
+  
+  
+  
+  
+  
+    
+<!--   Query Servlets - All paths start with "/admin/" for Admin Access Control Filter -->
+
+  
+   <!-- Init admin page and forward to admin JSP -->
+  <servlet>
+    <servlet-name>Admin Init/Page Servlet</servlet-name>
+    <servlet-class>org.yeastrc.file_object_storage.web_app.servlets_admin.AdminInitServlet</servlet-class>
+    <load-on-startup>3</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Admin Init/Page Servlet</servlet-name>
+    <url-pattern>/admin</url-pattern>
+  </servlet-mapping>  
+  
+  <servlet>
+    <servlet-name>Reload Config Servlet</servlet-name>
+    <servlet-class>org.yeastrc.file_object_storage.web_app.servlets_admin.ReloadConfigServlet</servlet-class>
+    <load-on-startup>3</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Reload Config Servlet</servlet-name>
+    <url-pattern>/admin/reloadConfig</url-pattern>
+  </servlet-mapping>  
+  
+  <!-- Only background thread is for cleanup so no servlet support stop/start background thread Thread -->
+    
+  <!-- Filters - run on each request -->
+
+    <!-- filter to set character encoding on each request -->
+    
+  <filter>
+    <filter-name>Set Character Encoding</filter-name>
+    <filter-class>org.apache.filters.SetCharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ignore</param-name>
+      <param-value>false</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>Set Character Encoding</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+    <!-- filter for Access Control -->
+    
+    <filter>
+        <filter-name>Access Control</filter-name>
+        <filter-class>org.yeastrc.file_object_storage.web_app.servlet_filter__access_control.AccessControl_ServletFilter</filter-class>
+    	<init-param>
+	      <param-name>access.control.type</param-name>
+	      <param-value>overall</param-value> <!-- See class AccessControl_ServletFilter for valid values -->
+    	</init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>Access Control</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+
+	<!-- filter for Admin Access Control - All paths start with "/admin/" for Admin Access Control Filter -->
+
+    <filter>
+        <filter-name>Admin Access Control</filter-name>
+        <filter-class>org.yeastrc.file_object_storage.web_app.servlet_filter__access_control.AccessControl_ServletFilter</filter-class>
+    	<init-param>
+	      <param-name>access.control.type</param-name>
+	      <param-value>admin</param-value> <!-- See class AccessControl_ServletFilter for valid values -->
+    	</init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>Admin Access Control</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>    
+
+	<!-- filter for Update Access Control - All paths start with "/update/" for Update Access Control Filter -->
+
+    <filter>
+        <filter-name>Update Access Control</filter-name>
+        <filter-class>org.yeastrc.file_object_storage.web_app.servlet_filter__access_control.AccessControl_ServletFilter</filter-class>
+    	<init-param>
+	      <param-name>access.control.type</param-name>
+	      <param-value>update</param-value> <!-- See class AccessControl_ServletFilter for valid values -->
+    	</init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>Update Access Control</filter-name>
+        <url-pattern>/update/*</url-pattern>
+    </filter-mapping>    
+    
+	<!-- Servlet Context Listeners.  Called on Web app startup and shutdown -->
+	<listener>
+		<listener-class>
+		org.yeastrc.file_object_storage.web_app.servlet_context.ServletContextAppListener
+		</listener-class>
+	</listener>
+	  
+  <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/jsp-pages/generalError.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>503</error-code>
+    <location>/WEB-INF/jsp-pages/generalError.jsp</location>
+  </error-page>
+</web-app>

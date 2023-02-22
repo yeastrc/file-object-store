@@ -1,0 +1,31 @@
+/*
+ *  Application 'Common_Accept_Import_Webapp_Client_Connector_Library' folder
+ *
+ */
+
+plugins {
+    // Apply the java-library plugin to add support for Java Library
+    id 'java-library'
+}
+
+//    defaults to currently installed JVM
+sourceCompatibility = 1.8
+
+//    defaults to sourceCompatibility
+targetCompatibility  = 1.8
+
+
+dependencies {
+
+    // JAXB dependencies (Required for Java 11+)
+    // https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+    implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.2'
+    // https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
+    implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
+	
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    mavenCentral()
+}
