@@ -133,8 +133,8 @@ public class ConfigDataInWebApp_Reader {
 
 							if ( StringUtils.isNotEmpty( webappConfigFilesDirectoryString ) ) {
 
-								File workDirectory = new File( webappConfigFilesDirectoryString );
-								if ( ! ( workDirectory.exists() && workDirectory.isDirectory() && workDirectory.canRead() ) ) {
+								configFilesDirectory = new File( webappConfigFilesDirectoryString );
+								if ( ! ( configFilesDirectory.exists() && configFilesDirectory.isDirectory() && configFilesDirectory.canRead() ) ) {
 									String msg = "Property '" + PROPERTY_NAME__WEBAPP_CONFIG_FILES_DIRECTORY 
 											+ "' in config does not exist, is not  a directory, or is not readable. Value: "
 											+ webappConfigFilesDirectoryString;
