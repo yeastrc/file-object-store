@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.file_object_storage.web_app.servlet_context.CurrentContext;
 import org.yeastrc.file_object_storage.web_app.servlet_context.Webapp_Undeploy_Started_Completed;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralStorageProcessingException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageProcessingException;
 
 /**
  * Log4J2 has shut down before ServletContext::contextDestroyed(...) is called
@@ -22,15 +22,15 @@ public class Log_Info_Error_AfterWebAppUndeploy_Started {
 
 	/**
 	 * @param msg
-	 * @throws SpectralStorageProcessingException 
+	 * @throws FileObjectStorageProcessingException 
 	 */
-	public static void log_INFO_AfterWebAppUndeploy_Started( String msg ) throws SpectralStorageProcessingException {
+	public static void log_INFO_AfterWebAppUndeploy_Started( String msg ) throws FileObjectStorageProcessingException {
 		
 		if ( ! Webapp_Undeploy_Started_Completed.isWebapp_Undeploy_Started() ) {
 			
 			String errorMsg = "Invalid to call when NOT Undeploy started.  true: if ( ! Webapp_Undeploy_Started_Completed.isWebapp_Undeploy_Started() ).  msg: " + msg;
 			log.error(errorMsg);
-			throw new SpectralStorageProcessingException( errorMsg );
+			throw new FileObjectStorageProcessingException( errorMsg );
 		}
 		
 		String logMsg = getLogMsgPrefix() + " INFO:  " + msg;
@@ -40,9 +40,9 @@ public class Log_Info_Error_AfterWebAppUndeploy_Started {
 
 	/**
 	 * @param msg
-	 * @throws SpectralStorageProcessingException 
+	 * @throws FileObjectStorageProcessingException 
 	 */
-	public static void log_ERROR_AfterWebAppUndeploy_Started( String msg ) throws SpectralStorageProcessingException {
+	public static void log_ERROR_AfterWebAppUndeploy_Started( String msg ) throws FileObjectStorageProcessingException {
 		
 		log_ERROR_AfterWebAppUndeploy_Started( msg, null /* throwable */ );
 	}
@@ -50,15 +50,15 @@ public class Log_Info_Error_AfterWebAppUndeploy_Started {
 	/**
 	 * @param msg
 	 * @param throwable
-	 * @throws SpectralStorageProcessingException 
+	 * @throws FileObjectStorageProcessingException 
 	 */
-	public static void log_ERROR_AfterWebAppUndeploy_Started( String msg, Throwable throwable ) throws SpectralStorageProcessingException {
+	public static void log_ERROR_AfterWebAppUndeploy_Started( String msg, Throwable throwable ) throws FileObjectStorageProcessingException {
 		
 		if ( ! Webapp_Undeploy_Started_Completed.isWebapp_Undeploy_Started() ) {
 			
 			String errorMsg = "Invalid to call when NOT Undeploy started.  true: if ( ! Webapp_Undeploy_Started_Completed.isWebapp_Undeploy_Started() ).  msg: " + msg;
 			log.error(errorMsg);
-			throw new SpectralStorageProcessingException( errorMsg );
+			throw new FileObjectStorageProcessingException( errorMsg );
 		}
 		
 		String logMsg = getLogMsgPrefix() + " ERROR:  " + msg;
@@ -77,7 +77,7 @@ public class Log_Info_Error_AfterWebAppUndeploy_Started {
 		
 		String now = new Date().toString();
 		
-		String prefix = now + ":  Spectral Storage Accept Import Webapp: CurrentContext: " + CurrentContext.getCurrentWebAppContext() 
+		String prefix = now + ":  YRC File Object Storage Webapp: CurrentContext: " + CurrentContext.getCurrentWebAppContext() 
 		+ ". ";
 		
 		return prefix;

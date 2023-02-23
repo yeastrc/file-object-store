@@ -1,0 +1,8 @@
+
+
+##  Value first retrieved from  Environment Variable or next java -D parameter using "YRC_FILE_OBJECT_STORAGE_CONFIG_FILES_DIR__ENV_LABEL"
+	
+
+
+webapp.config.files.directory=/spinning-disk-02/run-space--spinning-disk-02/File_Object_Storage__Service/Config/
+

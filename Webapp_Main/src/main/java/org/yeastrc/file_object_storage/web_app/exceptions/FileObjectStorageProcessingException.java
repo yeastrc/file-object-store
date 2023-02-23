@@ -4,35 +4,35 @@ package org.yeastrc.file_object_storage.web_app.exceptions;
  * 
  *
  */
-public class SpectralFileWebappConfigException extends Exception {
+public class FileObjectStorageProcessingException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
-	
-	public SpectralFileWebappConfigException() {
+
+	public FileObjectStorageProcessingException() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public SpectralFileWebappConfigException(String message, Throwable cause, boolean enableSuppression,
+	public FileObjectStorageProcessingException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub
 	}
 
-	public SpectralFileWebappConfigException(String message, Throwable cause) {
+	public FileObjectStorageProcessingException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public SpectralFileWebappConfigException(String message) {
+	public FileObjectStorageProcessingException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public SpectralFileWebappConfigException(Throwable cause) {
+	public FileObjectStorageProcessingException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 
-
+	
 }

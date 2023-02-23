@@ -8,7 +8,7 @@ import java.util.Date;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.file_object_storage.web_app.config.ConfigData_Directories_ProcessUploadInfo_InWorkDirectory;
 import org.yeastrc.file_object_storage.web_app.constants_enums.FileUploadConstants;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileFileUploadFileSystemException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageFileUploadFileSystemException;
 import org.slf4j.Logger;
 
 /**
@@ -31,10 +31,10 @@ public class TempDir_OnLocalFileSystem_CreateToUploadFileTo {
 	
 	/**
 	 * @return
-	 * @throws SpectralFileFileUploadFileSystemException 
+	 * @throws FileObjectStorageFileUploadFileSystemException 
 	 * @throws IOException 
 	 */
-	public File createTempDirToUploadFileTo() throws SpectralFileFileUploadFileSystemException, IOException {
+	public File createTempDirToUploadFileTo() throws FileObjectStorageFileUploadFileSystemException, IOException {
 		
 		File rootBaseDir = ConfigData_Directories_ProcessUploadInfo_InWorkDirectory.getSingletonInstance().getFileObjectStorage_BaseDirectory();
 		
@@ -49,7 +49,7 @@ public class TempDir_OnLocalFileSystem_CreateToUploadFileTo {
 			String msg = "uploadFileTempDir does not exist after testing for it and attempting to create it.  uploadFileTempDir: " 
 					+ uploadFileTempDir.getAbsolutePath();
 			log.error( msg );
-			throw new SpectralFileFileUploadFileSystemException(msg);
+			throw new FileObjectStorageFileUploadFileSystemException(msg);
 		}
 		
 		//  Create subdir for this specific file upload
@@ -66,7 +66,7 @@ public class TempDir_OnLocalFileSystem_CreateToUploadFileTo {
 			if ( retryCreateSubdirCount > 4 ) {
 				String msg = "Failed to create subdir after 4 attempts.";
 				log.error( msg );
-				throw new SpectralFileFileUploadFileSystemException(msg);
+				throw new FileObjectStorageFileUploadFileSystemException(msg);
 			}
 			int uploadKeyIncrement = ( (int) ( Math.random() * 10 ) ) + 5;
 			uploadKey += uploadKeyIncrement;
@@ -83,10 +83,10 @@ public class TempDir_OnLocalFileSystem_CreateToUploadFileTo {
 	 * @param uploadKey
 	 * @param uploadTempBase
 	 * @return null if subdir already exists
-	 * @throws SpectralFileFileUploadFileSystemException 
+	 * @throws FileObjectStorageFileUploadFileSystemException 
 	 * @throws IOException 
 	 */
-	private File createSubDirForUploadFileTempDir( String currentDate_yyyymmdd, long uploadKey, File uploadTempBase ) throws SpectralFileFileUploadFileSystemException, IOException {
+	private File createSubDirForUploadFileTempDir( String currentDate_yyyymmdd, long uploadKey, File uploadTempBase ) throws FileObjectStorageFileUploadFileSystemException, IOException {
 		
 		File subdir = getSubDirForUploadFileTempDir( currentDate_yyyymmdd, uploadKey, uploadTempBase );
 		if ( subdir.exists() ) {
@@ -96,7 +96,7 @@ public class TempDir_OnLocalFileSystem_CreateToUploadFileTo {
 		if ( ! subdir.mkdir() ) {
 			String msg = "Failed to make temp upload subdir: " + subdir.getCanonicalPath();
 			log.error( msg );
-			throw new SpectralFileFileUploadFileSystemException( msg );
+			throw new FileObjectStorageFileUploadFileSystemException( msg );
 		}
 		return subdir;
 	}

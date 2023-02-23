@@ -8,7 +8,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;  import org.slf4j.Logger;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileWebappConfigException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageWebappConfigException;
 
 /**
  * Update ConfigData_Allowed_Remotes_InWorkDirectory with contents in config file
@@ -94,7 +94,7 @@ public class ConfigData_Allowed_Remotes_InWorkDirectory_Reader {
 	 * @param propertiesFilename
 	 * @param configDataInWebApp
 	 * @throws IOException
-	 * @throws SpectralFileWebappConfigException 
+	 * @throws FileObjectStorageWebappConfigException 
 	 */
 	private void processPropertiesFilename( 
 			String propertiesFilename, 
@@ -126,23 +126,23 @@ public class ConfigData_Allowed_Remotes_InWorkDirectory_Reader {
 					}
 					String msg = "Properties file '" + propertiesFilename + "' not found in class path.";
 					log.error( msg );
-					throw new SpectralFileWebappConfigException( msg );
+					throw new FileObjectStorageWebappConfigException( msg );
 				}
 				
 			} else {
 
-				//  Get config file from Work Directory
+				//  Get config file from Config Files Directory
 
-				File workDirectory = ConfigDataInWebApp.getSingletonInstance().getWebappWorkDirectory();
+				File configFilesDirectory = ConfigDataInWebApp.getSingletonInstance().getConfigFilesDirectory();
 
 				//  Already tested but test here to be extra safe
-				if ( workDirectory == null ) {
-					String msg = "work directory in config is empty or missing";
+				if ( configFilesDirectory == null ) {
+					String msg = "Config Files directory in config is empty or missing";
 					log.error( msg );
-					throw new SpectralFileWebappConfigException( msg );
+					throw new FileObjectStorageWebappConfigException( msg );
 				}
 
-				File configFile = new File( workDirectory, propertiesFilename );
+				File configFile = new File( configFilesDirectory, propertiesFilename );
 				if ( ! ( configFile.exists() && configFile.isFile() && configFile.canRead() ) ) {
 					
 					if ( allowNoPropertiesFile == AllowNoPropertiesFile.YES ) {
@@ -153,7 +153,7 @@ public class ConfigData_Allowed_Remotes_InWorkDirectory_Reader {
 							+ "' does not exist, is not  a file, or is not readable."
 							+ "  Config file with path: " + configFile.getCanonicalPath();
 					log.error( msg );
-					throw new SpectralFileWebappConfigException( msg );
+					throw new FileObjectStorageWebappConfigException( msg );
 				}
 				
 				propertiesFileAsStream = new FileInputStream( configFile );

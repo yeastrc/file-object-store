@@ -19,11 +19,11 @@ import org.slf4j.LoggerFactory;  import org.slf4j.Logger;
 import org.yeastrc.file_object_storage.web_app.config.ConfigData_Directories_ProcessUploadInfo_InWorkDirectory;
 import org.yeastrc.file_object_storage.web_app.constants_enums.FileUploadConstants;
 import org.yeastrc.file_object_storage.web_app.constants_enums.ServetResponseFormatEnum;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileBadRequestToServletException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileDeserializeRequestException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileFileUploadFileSystemException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileFileUploadInternalException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileWebappInternalException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageBadRequestToServletException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageDeserializeRequestException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageFileUploadFileSystemException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageFileUploadInternalException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageWebappInternalException;
 import org.yeastrc.file_object_storage.web_app.file_storage_local_filesystem.StorageDir_OnLocalFileSystem_CreateToStoreFileIn;
 import org.yeastrc.file_object_storage.web_app.file_storage_local_filesystem.TempDir_OnLocalFileSystem_CreateToUploadFileTo;
 import org.yeastrc.file_object_storage.web_app.file_storage_local_filesystem.StorageDir_OnLocalFileSystem_CreateToStoreFileIn.StorageDir_OnLocalFileSystem_CreateToStoreFileIn__CreateSubdirIfNotExists_ENUM;
@@ -93,12 +93,12 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 
 			try {
 				requestObj = GetRequestObjectFromInputStream.getSingletonInstance().getRequestObjectFromStream( request );
-			} catch ( SpectralFileDeserializeRequestException e ) {
+			} catch ( FileObjectStorageDeserializeRequestException e ) {
 				throw e;
 			} catch (Exception e) {
 				String msg = "Failed to deserialize request";
 				log.error( msg, e );
-				throw new SpectralFileBadRequestToServletException( e );
+				throw new FileObjectStorageBadRequestToServletException( e );
 			}
 
 			try {
@@ -106,9 +106,9 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 			} catch (Exception e) {
 				String msg = "Failed to cast requestObj to UploadFile_AddFileFromFilenameAndPath_Request";
 				log.error( msg, e );
-				throw new SpectralFileBadRequestToServletException( e );
+				throw new FileObjectStorageBadRequestToServletException( e );
 			}
-		} catch (SpectralFileBadRequestToServletException e) {
+		} catch (FileObjectStorageBadRequestToServletException e) {
 
 			response.setStatus( HttpServletResponse.SC_BAD_REQUEST /* 400  */ );
 
@@ -193,13 +193,13 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 			if ( StringUtils.isEmpty( submitted_filenameWithPathString ) ) {
 				String msg = "request is missing filenameWithPath ";
 				log.warn( msg );
-				throw new SpectralFileBadRequestToServletException( msg );
+				throw new FileObjectStorageBadRequestToServletException( msg );
 			}
 
 			if ( submitted_fileSize == null ) {
 				String msg = "request is missing fileSize ";
 				log.warn( msg );
-				throw new SpectralFileBadRequestToServletException( msg );
+				throw new FileObjectStorageBadRequestToServletException( msg );
 			}
 			
 			try {
@@ -208,7 +208,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 				String msg = "fileSize in request is outside the value of a Java numeric type 'long': " + submitted_fileSize.toString();
 				log.warn( msg, e );
 				String msgReturned = "fileSize in request is outside the range of allowed values";
-				throw new SpectralFileBadRequestToServletException( msgReturned );
+				throw new FileObjectStorageBadRequestToServletException( msgReturned );
 			}
 
 			//  Process Submitted Filename With Path
@@ -308,7 +308,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 				
 				String msg = "S3 is NOT Supported at this time";
 				log.error(msg);
-				throw new SpectralFileFileUploadInternalException(msg);
+				throw new FileObjectStorageFileUploadInternalException(msg);
 			}
 			
 			//////
@@ -344,7 +344,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 					String msg = "Failed reading submitted file: " + submittedFileWithPath_FileObject.getAbsolutePath();
 					log.error(msg, e);
 	
-					throw new SpectralFileWebappInternalException(msg);
+					throw new FileObjectStorageWebappInternalException(msg);
 				} finally {
 
 					try {
@@ -354,7 +354,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 					} catch(Exception e){ 
 						String msg = "Failed closing input stream for file: " + submittedFileWithPath_FileObject.getAbsolutePath();
 						log.error(msg, e);
-						throw new SpectralFileWebappInternalException(msg);
+						throw new FileObjectStorageWebappInternalException(msg);
 					}
 
 				}
@@ -433,7 +433,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 				String msg = "Failed writing request to file: " + localCopyOfFileOnDisk_TempLocation.getAbsolutePath();
 				log.error(msg, e);
 
-				throw new SpectralFileWebappInternalException(msg);
+				throw new FileObjectStorageWebappInternalException(msg);
 			} finally {
 
 				boolean closeOutputStreamFail = false;
@@ -448,7 +448,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 
 					String msg = "Failed closing file: " + localCopyOfFileOnDisk_TempLocation.getAbsolutePath();
 					log.error(msg, e);
-					throw new SpectralFileWebappInternalException(msg);
+					throw new FileObjectStorageWebappInternalException(msg);
 				} finally {
 					try {
 						if ( inputStream != null ) {
@@ -459,7 +459,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 						}
 						String msg = "Failed closing input stream for file: " + localCopyOfFileOnDisk_TempLocation.getAbsolutePath();
 						log.error(msg, e);
-						throw new SpectralFileWebappInternalException(msg);
+						throw new FileObjectStorageWebappInternalException(msg);
 					}
 				}
 			}
@@ -478,7 +478,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 				String msg = "mainStorage_BaseDir does not exist after testing for it and attempting to create it.  mainStorage_BaseDir: " 
 						+ mainStorage_BaseDir.getAbsolutePath();
 				log.error( msg );
-				throw new SpectralFileFileUploadFileSystemException(msg);
+				throw new FileObjectStorageFileUploadFileSystemException(msg);
 			}
 			
 			
@@ -489,7 +489,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 				
 				String msg = "S3 is NOT Supported at this time";
 				log.error(msg);
-				throw new SpectralFileFileUploadInternalException(msg);
+				throw new FileObjectStorageFileUploadInternalException(msg);
 			}
 			
 
@@ -548,7 +548,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 					String msg = "Fail to delete temp uploaded data file.  Temp uploaded data File: " 
 							+ localCopyOfFileOnDisk_TempLocation.getAbsolutePath();
 					log.error( msg );
-					throw new SpectralFileFileUploadFileSystemException(msg);
+					throw new FileObjectStorageFileUploadFileSystemException(msg);
 				}
 			} else {
 
@@ -588,7 +588,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 									+ ", To file: "
 									+ mainStorage_SubDirBasedOnName__MetaFile.getAbsolutePath();
 							log.error( msg );
-							throw new SpectralFileFileUploadFileSystemException(msg);
+							throw new FileObjectStorageFileUploadFileSystemException(msg);
 						}
 					}
 	
@@ -603,7 +603,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 								+ ", To file: "
 								+ storage_Object_Name_File.getAbsolutePath();
 						log.error( msg );
-						throw new SpectralFileFileUploadFileSystemException(msg);
+						throw new FileObjectStorageFileUploadFileSystemException(msg);
 					}
 					
 				} else {
@@ -621,7 +621,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 								+ ", To file: "
 								+ storage_Object_Name_File.getAbsolutePath();
 						log.error( msg );
-						throw new SpectralFileFileUploadFileSystemException(msg);
+						throw new FileObjectStorageFileUploadFileSystemException(msg);
 					}
 				}
 			}
@@ -645,7 +645,7 @@ public class UploadFile_AddFileFromFilenameAndPath_Servlet extends HttpServlet {
 
 			return webserviceResponse;
 			
-		} catch (SpectralFileBadRequestToServletException e) {
+		} catch (FileObjectStorageBadRequestToServletException e) {
 
 			response.setStatus( HttpServletResponse.SC_BAD_REQUEST /* 400  */ );
 

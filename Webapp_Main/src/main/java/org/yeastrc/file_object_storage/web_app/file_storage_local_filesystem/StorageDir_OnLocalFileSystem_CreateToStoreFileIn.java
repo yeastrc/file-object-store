@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.file_object_storage.web_app.config.ConfigData_Directories_ProcessUploadInfo_InWorkDirectory;
 import org.yeastrc.file_object_storage.web_app.constants_enums.FileUploadConstants;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileFileUploadFileSystemException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageFileUploadFileSystemException;
 import org.slf4j.Logger;
 
 /**
@@ -33,14 +33,14 @@ public class StorageDir_OnLocalFileSystem_CreateToStoreFileIn {
 	 * @param createSubdirIfNotExists_ENUM - Flag of create subdir if not exist
 	 * @return - null if flag is not create if not exist and not exist
 	 * @throws IOException
-	 * @throws SpectralFileFileUploadFileSystemException 
+	 * @throws FileObjectStorageFileUploadFileSystemException 
 	 */
 	public File createToStoreFileIn( 
 			
 			String[] filenames_All,
 			StorageDir_OnLocalFileSystem_CreateToStoreFileIn__CreateSubdirIfNotExists_ENUM createSubdirIfNotExists_ENUM  
 			
-			) throws IOException, SpectralFileFileUploadFileSystemException {
+			) throws IOException, FileObjectStorageFileUploadFileSystemException {
 		
 		String filenameFirstStart = null;
 		
@@ -87,7 +87,7 @@ public class StorageDir_OnLocalFileSystem_CreateToStoreFileIn {
 			String msg = "fileStorageDir does not exist after testing for it and attempting to create it.  fileStorageDir: " 
 					+ fileStorageDir.getAbsolutePath();
 			log.error( msg );
-			throw new SpectralFileFileUploadFileSystemException(msg);
+			throw new FileObjectStorageFileUploadFileSystemException(msg);
 		}
 		
 		//  First Subdir with first 2 characters of filename
@@ -112,7 +112,7 @@ public class StorageDir_OnLocalFileSystem_CreateToStoreFileIn {
 				String msg = "firstSubDir does not exist after testing for it and attempting to create it.  firstSubDir: " 
 						+ firstSubDir.getAbsolutePath();
 				log.error( msg );
-				throw new SpectralFileFileUploadFileSystemException(msg);
+				throw new FileObjectStorageFileUploadFileSystemException(msg);
 			}
 		}
 
@@ -138,7 +138,7 @@ public class StorageDir_OnLocalFileSystem_CreateToStoreFileIn {
 				String msg = "secondSubDir does not exist after testing for it and attempting to create it.  secondSubDir: " 
 						+ secondSubDir.getAbsolutePath();
 				log.error( msg );
-				throw new SpectralFileFileUploadFileSystemException(msg);
+				throw new FileObjectStorageFileUploadFileSystemException(msg);
 			}
 		}
 
@@ -164,7 +164,7 @@ public class StorageDir_OnLocalFileSystem_CreateToStoreFileIn {
 				String msg = "thirdSubDir does not exist after testing for it and attempting to create it.  thirdSubDir: " 
 						+ thirdSubDir.getAbsolutePath();
 				log.error( msg );
-				throw new SpectralFileFileUploadFileSystemException(msg);
+				throw new FileObjectStorageFileUploadFileSystemException(msg);
 			}
 		}
 		

@@ -12,8 +12,8 @@ import javax.xml.bind.Marshaller;
 
 import org.slf4j.LoggerFactory;  import org.slf4j.Logger;
 import org.yeastrc.file_object_storage.web_app.constants_enums.ServetResponseFormatEnum;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileSerializeRequestException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileWebappConfigException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageSerializeRequestException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageWebappConfigException;
 
 /**
  * Write the Response Object to the output stream
@@ -71,7 +71,7 @@ public class WriteResponseObjectToOutputStream {
 				} catch ( JAXBException e ) {
 					String msg = "Failed to serialize response object";
 					log.error( msg, e );
-					throw new SpectralFileSerializeRequestException( msg, e );
+					throw new FileObjectStorageSerializeRequestException( msg, e );
 				}
 			} else if ( servetResponseFormat == ServetResponseFormatEnum.JSON ) {
 
@@ -86,7 +86,7 @@ public class WriteResponseObjectToOutputStream {
 			} else {
 				String msg = "Unknown value for servetResponseFormat: " + servetResponseFormat;
 				log.error( msg );
-				throw new SpectralFileWebappConfigException( msg );
+				throw new FileObjectStorageWebappConfigException( msg );
 			}
 			
 			response.setContentLength( outputStreamBufferOfServerResponse.size() );

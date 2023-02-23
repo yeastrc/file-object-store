@@ -22,12 +22,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;  import org.slf4j.Logger;
 import org.yeastrc.file_object_storage.web_app.config.ConfigData_Directories_ProcessUploadInfo_InWorkDirectory;
 import org.yeastrc.file_object_storage.web_app.constants_enums.ServetResponseFormatEnum;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileBadRequestToServletException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileDeserializeRequestException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileFileUploadInternalException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileSerializeRequestException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileWebappConfigException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileWebappInternalException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageBadRequestToServletException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageDeserializeRequestException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageFileUploadInternalException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageSerializeRequestException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageWebappConfigException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageWebappInternalException;
 import org.yeastrc.file_object_storage.web_app.file_storage_local_filesystem.StorageDir_OnLocalFileSystem_CreateToStoreFileIn;
 import org.yeastrc.file_object_storage.web_app.file_storage_local_filesystem.StorageDir_OnLocalFileSystem_CreateToStoreFileIn.StorageDir_OnLocalFileSystem_CreateToStoreFileIn__CreateSubdirIfNotExists_ENUM;
 import org.yeastrc.file_object_storage.web_app.meta_file_read_write_contents.MetaFileContents;
@@ -93,12 +93,12 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 
 			try {
 				requestObj = GetRequestObjectFromInputStream.getSingletonInstance().getRequestObjectFromStream( request );
-			} catch ( SpectralFileDeserializeRequestException e ) {
+			} catch ( FileObjectStorageDeserializeRequestException e ) {
 				throw e;
 			} catch (Exception e) {
 				String msg = "Failed to deserialize request";
 				log.error( msg, e );
-				throw new SpectralFileBadRequestToServletException( e );
+				throw new FileObjectStorageBadRequestToServletException( e );
 			}
 
 			try {
@@ -106,9 +106,9 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 			} catch (Exception e) {
 				String msg = "Incoming request not deserialize to expected Java class.  Failed to cast requestObj to Get_StoredFileObjectContents_Request";
 				log.error( msg, e );
-				throw new SpectralFileBadRequestToServletException( "Incoming request not deserialize to expected Java class" );
+				throw new FileObjectStorageBadRequestToServletException( "Incoming request not deserialize to expected Java class" );
 			}
-		} catch (SpectralFileBadRequestToServletException e) {
+		} catch (FileObjectStorageBadRequestToServletException e) {
 
 			response.setStatus( HttpServletResponse.SC_BAD_REQUEST /* 400  */ );
 			
@@ -181,7 +181,7 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 				
 				String msg = "S3 is NOT Supported at this time";
 				log.error(msg);
-				throw new SpectralFileFileUploadInternalException(msg);
+				throw new FileObjectStorageFileUploadInternalException(msg);
 			}
 			
 			//////
@@ -262,7 +262,7 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 							if ( ! ( object instanceof MetaFileContents )  ) {
 								String msg = "Unmarshal of metadata file not result in object of type MetaFileContents ";
 								log.error(msg);
-								throw new SpectralFileDeserializeRequestException(msg);
+								throw new FileObjectStorageDeserializeRequestException(msg);
 							}
 							
 							MetaFileContents metaFileContents = (MetaFileContents) object;
@@ -350,7 +350,7 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 				String msg = "Failed writing request to file: " + storage_Object_Name_File_ToUse.getAbsolutePath();
 				log.error(msg, e);
 
-				throw new SpectralFileWebappInternalException(msg);
+				throw new FileObjectStorageWebappInternalException(msg);
 			} finally {
 
 				boolean closeOutputStreamFail = false;
@@ -363,7 +363,7 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 
 					String msg = "Failed closing outputStream";
 					log.error(msg, e);
-					throw new SpectralFileWebappInternalException(msg);
+					throw new FileObjectStorageWebappInternalException(msg);
 				} finally {
 					try {
 						if ( inputStream != null ) {
@@ -374,7 +374,7 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 						}
 						String msg = "Failed closing input stream for file: " + storage_Object_Name_File_ToUse.getAbsolutePath();
 						log.error(msg, e);
-						throw new SpectralFileWebappInternalException(msg);
+						throw new FileObjectStorageWebappInternalException(msg);
 					}
 				}
 			}
@@ -388,11 +388,11 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 	/**
 	 * @param responseInHeader
 	 * @param httpServletResponse
-	 * @throws SpectralFileSerializeRequestException 
+	 * @throws FileObjectStorageSerializeRequestException 
 	 * @throws JAXBException 
-	 * @throws SpectralFileWebappConfigException 
+	 * @throws FileObjectStorageWebappConfigException 
 	 */
-	private void addHeader_ToResponse( Get_StoredFileObjectContents_Response_InHeader responseInHeader, HttpServletResponse httpServletResponse ) throws SpectralFileSerializeRequestException, JAXBException, SpectralFileWebappConfigException {
+	private void addHeader_ToResponse( Get_StoredFileObjectContents_Response_InHeader responseInHeader, HttpServletResponse httpServletResponse ) throws FileObjectStorageSerializeRequestException, JAXBException, FileObjectStorageWebappConfigException {
 		
 		if ( servetResponseFormat == ServetResponseFormatEnum.XML ) {
 
@@ -416,7 +416,7 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 			} catch ( JAXBException e2 ) {
 				String msg = "Failed to serialize response object";
 				log.error( msg, e2 );
-				throw new SpectralFileSerializeRequestException( msg, e2 );
+				throw new FileObjectStorageSerializeRequestException( msg, e2 );
 			}
 			
 		} else if ( servetResponseFormat == ServetResponseFormatEnum.JSON ) {
@@ -439,7 +439,7 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 		} else {
 			String msg = "Unknown value for servetResponseFormat: " + servetResponseFormat;
 			log.error( msg );
-			throw new SpectralFileWebappConfigException( msg );
+			throw new FileObjectStorageWebappConfigException( msg );
 		}
 		
 	}

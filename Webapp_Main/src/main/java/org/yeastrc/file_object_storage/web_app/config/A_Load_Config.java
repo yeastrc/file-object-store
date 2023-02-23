@@ -28,6 +28,6 @@ public class A_Load_Config {
 		ConfigDataInWebApp_Reader.getInstance().readConfigDataInWebApp();
 		ConfigData_Allowed_Remotes_InWorkDirectory_Reader.getInstance().readConfigDataInWebApp();
 		
-		ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader.getInstance().readConfigDataInWebApp();
+		ConfigData_Directories_ProcessUploadInfo_InConfigFilesDirectory_Reader.getInstance().readConfigDataInWebApp();
 	}
 }

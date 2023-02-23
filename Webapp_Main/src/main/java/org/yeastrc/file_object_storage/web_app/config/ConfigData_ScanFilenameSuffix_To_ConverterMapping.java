@@ -9,8 +9,8 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileWebappConfigException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileWebappInternalException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageWebappConfigException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageWebappInternalException;
 
 /**
  * 
@@ -27,11 +27,11 @@ public class ConfigData_ScanFilenameSuffix_To_ConverterMapping {
 	
 	/**
 	 * @return Singleton instance
-	 * @throws SpectralFileWebappInternalException 
+	 * @throws FileObjectStorageWebappInternalException 
 	 */
-	public static ConfigData_ScanFilenameSuffix_To_ConverterMapping getSingletonInstance() throws SpectralFileWebappInternalException { 
+	public static ConfigData_ScanFilenameSuffix_To_ConverterMapping getSingletonInstance() throws FileObjectStorageWebappInternalException { 
 		if ( instance == null ) {
-			throw new SpectralFileWebappInternalException( "Singleton Instance NOT yet created" );
+			throw new FileObjectStorageWebappInternalException( "Singleton Instance NOT yet created" );
 		}
 		return instance; 
 	}
@@ -39,12 +39,12 @@ public class ConfigData_ScanFilenameSuffix_To_ConverterMapping {
 	/**
 	 * package private
 	 * @param instance
-	 * @throws SpectralFileWebappInternalException 
+	 * @throws FileObjectStorageWebappInternalException 
 	 */
-	static void setInstance(ConfigData_ScanFilenameSuffix_To_ConverterMapping instance) throws SpectralFileWebappInternalException {
+	static void setInstance(ConfigData_ScanFilenameSuffix_To_ConverterMapping instance) throws FileObjectStorageWebappInternalException {
 		
 		if ( ! instance.configurationComplete ) {
-			throw new SpectralFileWebappInternalException("Error call setInstance(...): ( ! instance.configurationComplete )");
+			throw new FileObjectStorageWebappInternalException("Error call setInstance(...): ( ! instance.configurationComplete )");
 		}
 		
 		ConfigData_ScanFilenameSuffix_To_ConverterMapping.instance = instance;
@@ -57,13 +57,13 @@ public class ConfigData_ScanFilenameSuffix_To_ConverterMapping {
 	/**
 	 * Package Private
 	 * 
-	 * @throws SpectralFileWebappInternalException 
+	 * @throws FileObjectStorageWebappInternalException 
 	 * 
 	 */
-	void setConfigurationComplete() throws SpectralFileWebappInternalException {
+	void setConfigurationComplete() throws FileObjectStorageWebappInternalException {
 		
 		if ( configurationComplete ) {
-			throw new SpectralFileWebappInternalException("Error call setConfigurationComplete(...) since already called");
+			throw new FileObjectStorageWebappInternalException("Error call setConfigurationComplete(...) since already called");
 		}
 		
 		scanfilename_suffix_to_converter_base_url_mapping__UNMODIFIABLE = Collections.unmodifiableList(scanfilename_suffix_to_converter_base_url_mapping);
@@ -80,17 +80,17 @@ public class ConfigData_ScanFilenameSuffix_To_ConverterMapping {
 	/**
 	 * Package Private
 	 * @param entry
-	 * @throws SpectralFileWebappConfigException 
-	 * @throws SpectralFileWebappInternalException 
+	 * @throws FileObjectStorageWebappConfigException 
+	 * @throws FileObjectStorageWebappInternalException 
 	 */
-	void addSingleEntry( ConfigData_ScanFilenameSuffix_To_ConverterMapping_SingleEntry entry, String configFilename ) throws SpectralFileWebappConfigException, SpectralFileWebappInternalException {
+	void addSingleEntry( ConfigData_ScanFilenameSuffix_To_ConverterMapping_SingleEntry entry, String configFilename ) throws FileObjectStorageWebappConfigException, FileObjectStorageWebappInternalException {
 		
 		if ( StringUtils.isEmpty( entry.converter_base_url ) || StringUtils.isEmpty( entry.scan_filename_suffix ) ) {
 			throw new IllegalArgumentException( "( StringUtils.isEmpty( entry.converter_base_url ) || StringUtils.isEmpty( entry.scan_filename_suffix ) )" );
 		}
 		
 		if ( configurationComplete ) {
-			throw new SpectralFileWebappInternalException("Error call addSingleEntry(...) since already called setConfigurationComplete(...)");
+			throw new FileObjectStorageWebappInternalException("Error call addSingleEntry(...) since already called setConfigurationComplete(...)");
 		}
 		
 		{
@@ -110,7 +110,7 @@ public class ConfigData_ScanFilenameSuffix_To_ConverterMapping {
 				
 					String msg = "!!! Config File ERROR: The same file suffix '" + entry.scan_filename_suffix + "' is under 2 different entries with different converter_base_url values in config file '" + configFilename + "' !!!";
 					log.error(msg);
-					throw new SpectralFileWebappConfigException(msg);
+					throw new FileObjectStorageWebappConfigException(msg);
 				}
 			}
 		}

@@ -35,23 +35,23 @@ public class ConfigDataInWebApp {
 	/**
 	 * The 'work' directory for the webapp
 	 */
-	private File webappWorkDirectory;
+	private File configFilesDirectory;
 
 	/**
 	 * The 'work' directory for the webapp
 	 * @return
 	 */
-	public File getWebappWorkDirectory() {
-		return webappWorkDirectory;
+	public File getConfigFilesDirectory() {
+		return configFilesDirectory;
 	}
 
 	/**
-	 * The 'work' directory for the webapp
+	 * The 'Config Files' directory for the webapp
 	 * 
-	 * @param webappWorkDirectory
+	 * @param configFilesDirectory
 	 */
-	public void setWebappWorkDirectory(File webappWorkDirectory) {
-		this.webappWorkDirectory = webappWorkDirectory;
+	public void setConfigFilesDirectory(File configFilesDirectory) {
+		this.configFilesDirectory = configFilesDirectory;
 	}
 
 

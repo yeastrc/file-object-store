@@ -13,7 +13,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 
 import org.slf4j.LoggerFactory;  import org.slf4j.Logger;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileDeserializeRequestException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageDeserializeRequestException;
 import org.yeastrc.file_object_storage.web_app.utils.Create_XMLInputFactory_XXE_Safe;
 
 /**
@@ -88,7 +88,7 @@ public class GetRequestObjectFromInputStream {
 			} catch ( Exception e ) {
 				String msg = "Failed to deserialize request object";
 				log.error( msg, e );
-				throw new SpectralFileDeserializeRequestException( msg, e );
+				throw new FileObjectStorageDeserializeRequestException( msg, e );
 			}
 			return webserviceRequestAsObject; 
 		} finally {

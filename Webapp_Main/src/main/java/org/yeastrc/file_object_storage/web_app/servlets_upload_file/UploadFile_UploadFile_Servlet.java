@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;  import org.slf4j.Logger;
 import org.yeastrc.file_object_storage.web_app.config.ConfigData_Directories_ProcessUploadInfo_InWorkDirectory;
 import org.yeastrc.file_object_storage.web_app.constants_enums.FileUploadConstants;
 import org.yeastrc.file_object_storage.web_app.constants_enums.ServetResponseFormatEnum;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileFileUploadFileSystemException;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileFileUploadInternalException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageFileUploadFileSystemException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageFileUploadInternalException;
 import org.yeastrc.file_object_storage.web_app.file_storage_local_filesystem.StorageDir_OnLocalFileSystem_CreateToStoreFileIn;
 import org.yeastrc.file_object_storage.web_app.file_storage_local_filesystem.TempDir_OnLocalFileSystem_CreateToUploadFileTo;
 import org.yeastrc.file_object_storage.web_app.file_storage_local_filesystem.StorageDir_OnLocalFileSystem_CreateToStoreFileIn.StorageDir_OnLocalFileSystem_CreateToStoreFileIn__CreateSubdirIfNotExists_ENUM;
@@ -174,7 +174,7 @@ public class UploadFile_UploadFile_Servlet extends HttpServlet {
 				String msg = "mainStorage_BaseDir does not exist after testing for it and attempting to create it.  mainStorage_BaseDir: " 
 						+ mainStorage_BaseDir.getAbsolutePath();
 				log.error( msg );
-				throw new SpectralFileFileUploadFileSystemException(msg);
+				throw new FileObjectStorageFileUploadFileSystemException(msg);
 			}
 			
 			
@@ -185,7 +185,7 @@ public class UploadFile_UploadFile_Servlet extends HttpServlet {
 				
 				String msg = "S3 is NOT Supported at this time";
 				log.error(msg);
-				throw new SpectralFileFileUploadInternalException(msg);
+				throw new FileObjectStorageFileUploadInternalException(msg);
 			}
 				
 
@@ -221,7 +221,7 @@ public class UploadFile_UploadFile_Servlet extends HttpServlet {
 					String msg = "Fail to delete temp uploaded data file.  Temp uploaded data File: " 
 							+ saveUploadedFileToLocalDiskFile__Response.savedFile.getAbsolutePath();
 					log.error( msg );
-					throw new SpectralFileFileUploadFileSystemException(msg);
+					throw new FileObjectStorageFileUploadFileSystemException(msg);
 				}
 			} else {
 
@@ -259,7 +259,7 @@ public class UploadFile_UploadFile_Servlet extends HttpServlet {
 									+ ", To file: "
 									+ mainStorage_SubDirBasedOnName__MetaFile.getAbsolutePath();
 							log.error( msg );
-							throw new SpectralFileFileUploadFileSystemException(msg);
+							throw new FileObjectStorageFileUploadFileSystemException(msg);
 						}
 					}
 
@@ -274,7 +274,7 @@ public class UploadFile_UploadFile_Servlet extends HttpServlet {
 								+ ", To file: "
 								+ storage_Object_Name_File.getAbsolutePath();
 						log.error( msg );
-						throw new SpectralFileFileUploadFileSystemException(msg);
+						throw new FileObjectStorageFileUploadFileSystemException(msg);
 					}
 				
 				} else {
@@ -292,7 +292,7 @@ public class UploadFile_UploadFile_Servlet extends HttpServlet {
 								+ ", To file: "
 								+ storage_Object_Name_File.getAbsolutePath();
 						log.error( msg );
-						throw new SpectralFileFileUploadFileSystemException(msg);
+						throw new FileObjectStorageFileUploadFileSystemException(msg);
 					}
 				}
 			}

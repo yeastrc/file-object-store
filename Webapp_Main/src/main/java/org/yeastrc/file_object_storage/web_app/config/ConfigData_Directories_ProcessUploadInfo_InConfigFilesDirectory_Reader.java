@@ -10,15 +10,15 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;  import org.slf4j.Logger;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralFileWebappConfigException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageWebappConfigException;
 
 /**
  * Update ConfigData_Directories_ProcessUploadCommand_InWorkDirectory with contents in config file
  *
  */
-public class ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader {
+public class ConfigData_Directories_ProcessUploadInfo_InConfigFilesDirectory_Reader {
 
-	private static final Logger log = LoggerFactory.getLogger(ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader.class);
+	private static final Logger log = LoggerFactory.getLogger(ConfigData_Directories_ProcessUploadInfo_InConfigFilesDirectory_Reader.class);
 	
 	//  No Default file
 //	private static String CONFIG_DEFAULTS_FILENAME = "spectral_server_accept_import_config_dirs_process_cmd_defaults.properties";
@@ -50,13 +50,13 @@ public class ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader {
 	private static enum AllowNoPropertiesFile { YES, NO }
 	
 	//  private constructor
-	private ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader() { }
+	private ConfigData_Directories_ProcessUploadInfo_InConfigFilesDirectory_Reader() { }
 	
 	/**
 	 * @return newly created instance
 	 */
-	public static ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader getInstance() { 
-		return new ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader(); 
+	public static ConfigData_Directories_ProcessUploadInfo_InConfigFilesDirectory_Reader getInstance() { 
+		return new ConfigData_Directories_ProcessUploadInfo_InConfigFilesDirectory_Reader(); 
 	}
 	
 	/**
@@ -104,7 +104,7 @@ public class ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader {
 						+ "' in config does not exist or is not a directory or is not readable.  Value:  " 
 						+ internalConfigDirectoryStrings.scanStorageBaseDirectory;
 				log.error( msg );
-				throw new SpectralFileWebappConfigException( msg );
+				throw new FileObjectStorageWebappConfigException( msg );
 			}
 
 			configData_Directories_ProcessUploadCommand_InWorkDirectory.setFileObjectStorage_BaseDirectory( fileObjectStorage_BaseDirectory );
@@ -118,7 +118,7 @@ public class ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader {
 					+ PROPERTY_NAME__FILE_OBJECT_STORAGE_BASE_DIRECTORY 
 					+ "' to a value in config.";
 				log.error( msg );
-				throw new SpectralFileWebappConfigException( msg );
+				throw new FileObjectStorageWebappConfigException( msg );
 		}
 
 		//   AWS S3 Support commented out.  See file ZZ__AWS_S3_Support_CommentedOut.txt in GIT repo root.
@@ -162,7 +162,7 @@ public class ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader {
 	 * @param propertiesFilename
 	 * @param configDataInWebApp
 	 * @throws IOException
-	 * @throws SpectralFileWebappConfigException 
+	 * @throws FileObjectStorageWebappConfigException 
 	 */
 	private void processPropertiesFilename( 
 			String propertiesFilename, 
@@ -198,23 +198,23 @@ public class ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader {
 					}
 					String msg = "Properties file '" + propertiesFilename + "' not found in class path.";
 					log.error( msg );
-					throw new SpectralFileWebappConfigException( msg );
+					throw new FileObjectStorageWebappConfigException( msg );
 				}
 				
 			} else {
 
-				//  Get config file from Work Directory
+				//  Get config file from Config File Directory
 
-				File workDirectory = ConfigDataInWebApp.getSingletonInstance().getWebappWorkDirectory();
+				File configFilesDirectory = ConfigDataInWebApp.getSingletonInstance().getConfigFilesDirectory();
 
 				//  Already tested but test here to be extra safe
-				if ( workDirectory == null ) {
-					String msg = "work directory in config is empty or missing";
+				if ( configFilesDirectory == null ) {
+					String msg = "Config Files directory in config is empty or missing";
 					log.error( msg );
-					throw new SpectralFileWebappConfigException( msg );
+					throw new FileObjectStorageWebappConfigException( msg );
 				}
 
-				File configFile = new File( workDirectory, propertiesFilename );
+				File configFile = new File( configFilesDirectory, propertiesFilename );
 				if ( ! ( configFile.exists() && configFile.isFile() && configFile.canRead() ) ) {
 					
 					if ( allowNoPropertiesFile == AllowNoPropertiesFile.YES ) {
@@ -225,7 +225,7 @@ public class ConfigData_Directories_ProcessUploadInfo_InWorkDirectory_Reader {
 							+ "' does not exist, is not  a file, or is not readable."
 							+ "  Config file with path: " + configFile.getCanonicalPath();
 					log.error( msg );
-					throw new SpectralFileWebappConfigException( msg );
+					throw new FileObjectStorageWebappConfigException( msg );
 				}
 				
 				propertiesFileAsStream = new FileInputStream( configFile );

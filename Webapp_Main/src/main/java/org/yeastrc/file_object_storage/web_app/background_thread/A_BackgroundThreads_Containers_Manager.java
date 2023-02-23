@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.file_object_storage.web_app.log_error_after_webapp_undeploy_started.Log_Info_Error_AfterWebAppUndeploy_Started;
-import org.yeastrc.file_object_storage.web_app.exceptions.SpectralStorageProcessingException;
+import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageProcessingException;
 
 /**
  * Manage the Containers that manage the Background Threads
@@ -40,7 +40,7 @@ public class A_BackgroundThreads_Containers_Manager {
 		if ( remove_OldUploaded_TempFiles_Thread_Container == null ) {
 			String msg = "getComputeAPIKeyForScanFile_Thread_Container() called before initial_CreateStart_Thread() called.";
 			log.error(msg);
-			throw new SpectralStorageProcessingException(msg);
+			throw new FileObjectStorageProcessingException(msg);
 		}
 		return remove_OldUploaded_TempFiles_Thread_Container;
 	}

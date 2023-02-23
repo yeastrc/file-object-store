@@ -4,32 +4,32 @@ package org.yeastrc.file_object_storage.web_app.exceptions;
  * 
  *
  */
-public class SpectralFileFileUploadFileNotFoundException extends Exception {
+public class FileObjectStorageFileUploadFileSystemException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public SpectralFileFileUploadFileNotFoundException() {
+	public FileObjectStorageFileUploadFileSystemException() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public SpectralFileFileUploadFileNotFoundException(String message, Throwable cause, boolean enableSuppression,
+	public FileObjectStorageFileUploadFileSystemException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub
 	}
 
-	public SpectralFileFileUploadFileNotFoundException(String message, Throwable cause) {
+	public FileObjectStorageFileUploadFileSystemException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public SpectralFileFileUploadFileNotFoundException(String message) {
+	public FileObjectStorageFileUploadFileSystemException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public SpectralFileFileUploadFileNotFoundException(Throwable cause) {
+	public FileObjectStorageFileUploadFileSystemException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
