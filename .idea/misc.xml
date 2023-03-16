@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/Client_Connector_Library" />
+    <file type="web" url="file://$PROJECT_DIR$/Common_Webapp_Client_Connector_Library" />
+  </component>
+</project>
