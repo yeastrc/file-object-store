@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="US-ASCII" ?>
+<project name="Build All" default="build_all" basedir=".">
+
+	<!--
+
+	  Ant build to to create the zip file to post to Github Release.
+
+	  Run the default target to create the zip file.
+
+	  If ant is installed and on the PATH,
+	  enter on the command line   "ant -f  ant_create_download_zip_file.xml"
+	  in the base directory to create the zip file to post to Google Code in the downloads section.
+
+
+		First Build the sub projects using their Ant scripts. 
+	  -->
+
+  <target name="build_all" depends="compileAllSubmodules">
+
+	<delete dir="deploy" />
+	<mkdir dir="deploy" />
+  	
+	<copy file="Webapp_Main/build/libs/file_object_storage.war" todir="deploy" />
+
+  	<!--
+	<delete dir="download_zip_file" />
+	<mkdir dir="download_zip_file" />
+  	
+	<zip destfile="download_zip_file/file_object_storage_service_deploy.zip" >
+	    <fileset dir="." includes="deploy/**">
+	    </fileset>
+	</zip>
+	-->
+
+  </target>
+
+
+	<target name="compileAllSubmodules" >
+
+		<!--  Build submodules and create runnable jars -->
+		
+		<ant antfile="ant__create_jar_client_connector.xml"  dir="Client_Connector_Library" />
+
+		<ant antfile="ant_create_war.xml"  dir="Webapp_Main" />
+
+	</target>	
+
+</project>

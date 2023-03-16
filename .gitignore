@@ -1,4 +1,6 @@
 /.gradle/
+/deploy/
+/download_zip_file/
 /build/
 /bin/
 /.settings/
