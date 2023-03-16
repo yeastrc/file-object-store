@@ -28,7 +28,6 @@ public class ConfigData_Allowed_Remotes_InWorkDirectory_Reader {
 	private static String PROPERTY_NAME__ALLOWED_REMOTE_IPS_OVERALL = "allowed.remote.ips.overall";
 	private static String PROPERTY_NAME__ALLOWED_REMOTE_IPS_ADMIN = "allowed.remote.ips.admin";
 	private static String PROPERTY_NAME__ALLOWED_REMOTE_IPS_UPDATE = "allowed.remote.ips.update";
-	private static String PROPERTY_NAME__ALLOWED_REMOTE_IPS_IMPORTER = "allowed.remote.ips.importer";
 	private static String PROPERTY_NAME__ALLOWED_REMOTE_IPS_DELIMITER = ",";
 	
 	private static enum IsDefaultPropertiesFile { YES, NO }
@@ -84,8 +83,6 @@ public class ConfigData_Allowed_Remotes_InWorkDirectory_Reader {
 				+ StringUtils.join( configData_Allowed_Remotes_InWorkDirectory.getAllowedRemoteIPs_Admin(), " , "  ) );
 		log.warn( "INFO: '" + PROPERTY_NAME__ALLOWED_REMOTE_IPS_UPDATE + "' has value: " 
 				+ StringUtils.join( configData_Allowed_Remotes_InWorkDirectory.getAllowedRemoteIPs_Update(), " , " ) );
-		log.warn( "INFO: '" + PROPERTY_NAME__ALLOWED_REMOTE_IPS_IMPORTER + "' has value: " 
-				+ StringUtils.join( configData_Allowed_Remotes_InWorkDirectory.getAllowedRemoteIPs_Importer(), " , " ) );
 		
 		ConfigData_Allowed_Remotes_InWorkDirectory.setInstance( configData_Allowed_Remotes_InWorkDirectory );
 	}
@@ -202,17 +199,6 @@ public class ConfigData_Allowed_Remotes_InWorkDirectory_Reader {
 					configData_Allowed_Remotes_InWorkDirectory.addAllowedRemoteIP_Update( allowedRemoteIP );
 				}
 			}
-
-			propertyValue = configProps.getProperty( PROPERTY_NAME__ALLOWED_REMOTE_IPS_IMPORTER );
-			if ( StringUtils.isNotEmpty( propertyValue ) ) {
-				
-				String[] allowedRemoteIPs = propertyValue.split( PROPERTY_NAME__ALLOWED_REMOTE_IPS_DELIMITER );
-
-				for ( String allowedRemoteIP : allowedRemoteIPs ) {
-					configData_Allowed_Remotes_InWorkDirectory.addAllowedRemoteIP_Importer( allowedRemoteIP );
-				}
-			}
-			
 			
 		} catch ( RuntimeException e ) {
 			log.error( "Error processing Properties file '" + propertiesFilename + "', exception: " + e.toString(), e );
