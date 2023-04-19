@@ -80,6 +80,24 @@
   </servlet-mapping>   
   
   
+  <!-- Send AWS S3 Bucket Name and Object Name to process - return XML -->
+  
+  <servlet>
+    <servlet-name>Send AWS S3 Bucket Name and Object Name to process Servlet - XML Response</servlet-name>
+    <servlet-class>org.yeastrc.file_object_storage.web_app.servlets_upload_file.UploadFile_AddFile_From_S3_Bucket_ObjectName_Servlet</servlet-class>
+    	<!-- required parameter resultDataFormat -->
+    <init-param>
+      <param-name>resultDataFormat</param-name> <!-- Must be value in Java Class ServletResultDataFormatConstants -->
+      <param-value>XML</param-value> <!-- Must be value in Java Class ServletResultDataFormatConstants -->
+    </init-param>    
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Send AWS S3 Bucket Name and Object Name to process Servlet - XML Response</servlet-name>
+    <url-pattern>/update/uploadFile_add_S3_BucketName_ObjectName_XML</url-pattern>
+  </servlet-mapping>   
+  
+  
   <!-- Get File Contents - return Response Header as XML -->
   
   <servlet>

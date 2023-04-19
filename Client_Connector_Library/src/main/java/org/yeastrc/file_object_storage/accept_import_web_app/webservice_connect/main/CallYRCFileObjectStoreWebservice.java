@@ -29,8 +29,9 @@ import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_r
 import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.Get_StoredFileObjectContents_Response_InHeader;
 import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.UploadFile_AddFileFromFilenameAndPath_Request;
 import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.UploadFile_AddFileFromFilenameAndPath_Response;
-import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.UploadFile_AddFileInS3Bucket_Request;
-import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.UploadFile_AddFileInS3Bucket_Response;
+import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.UploadFile_AddFileIn_S3_BucketName_ObjectName_Request;
+import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.UploadFile_AddFileIn_S3_BucketName_ObjectName_Response;
+import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.UploadFile_UploadFile_Pass_Filename_InputStream_Size_Request;
 import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.UploadFile_UploadFile_Request;
 import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.UploadFile_UploadFile_Response;
 
@@ -82,8 +83,8 @@ public class CallYRCFileObjectStoreWebservice {
 
 		jaxbContext = 
 				JAXBContext.newInstance( 
-						UploadFile_AddFileInS3Bucket_Request.class,
-						UploadFile_AddFileInS3Bucket_Response.class,
+						UploadFile_AddFileIn_S3_BucketName_ObjectName_Request.class,
+						UploadFile_AddFileIn_S3_BucketName_ObjectName_Response.class,
 						UploadFile_AddFileFromFilenameAndPath_Request.class,
 						UploadFile_AddFileFromFilenameAndPath_Response.class,
 						UploadFile_UploadFile_Response.class,
@@ -97,7 +98,7 @@ public class CallYRCFileObjectStoreWebservice {
 	/**
 	 * @param webserviceRequest
 	 * @return
-	 * @throws Exception - YRCSpectralStorageAcceptImportWebserviceCallErrorException thrown if get HTTP status code other than 200 ok
+	 * @throws Exception - YRCFileObjectStoreWebserviceCallErrorException thrown if get HTTP status code other than 200 ok
 	 */
 	public void call_HealthCheck_Webservice() throws Exception {
 		if ( ! instanceInitialized ) {
@@ -636,36 +637,36 @@ public class CallYRCFileObjectStoreWebservice {
 	 * @return
 	 * @throws Exception 
 	 */
-//	public UploadFile_AddFileInS3Bucket_Response call_UploadFile_AddFileInS3Bucket_Webservice( UploadFile_AddFileInS3Bucket_Request webserviceRequest ) throws Exception {
-//		if ( ! instanceInitialized ) {
-//			throw new IllegalStateException( "Not initialized" );
-//		}
-//		if ( webserviceRequest == null ) {
-//			throw new IllegalArgumentException( "webserviceRequest param must not be null in call to call_UploadFile_AddFileInS3Bucket_Webservice(...)" );
-//		}
-//
-//		String webserviceURL = spectralStorageServerBaseURL
-//				+ WebserviceSpectralStorageAcceptImportPathConstants.UPLOAD_SCAN_FILE_ADD_SCAN_FILE_IN_S3_BUCKET_SERVLET_XML;
-//		Object webserviceResponseAsObject = callActualWebserviceOnServerSendObject( webserviceRequest, webserviceURL );
-//		if ( ! ( webserviceResponseAsObject instanceof UploadFile_AddFileInS3Bucket_Response ) ) {
-//			String msg = "Response unmarshaled to class other than UploadFile_AddFileInS3Bucket_Response.  "
-//					+ " Unmarshaled Class: " + webserviceResponseAsObject.getClass();
-//			YRCSpectralStorageAcceptImportWebserviceCallErrorException exception = new YRCSpectralStorageAcceptImportWebserviceCallErrorException( msg );
-//			exception.setFailToDecodeDataReceivedFromServer(true);
-//			throw exception;
-//		}
-//		UploadFile_AddFileInS3Bucket_Response webserviceResponse = null;
-//		try {
-//			webserviceResponse = (UploadFile_AddFileInS3Bucket_Response) webserviceResponseAsObject;
-//		} catch ( Exception e ) {
-//			String msg = "Error. Fail to cast response as UploadFile_AddFileInS3Bucket_Response: "
-//					+ e.toString();
-//			YRCSpectralStorageAcceptImportWebserviceCallErrorException exception = new YRCSpectralStorageAcceptImportWebserviceCallErrorException( msg );
-//			exception.setFailToDecodeDataReceivedFromServer(true);
-//			throw exception;
-//		}
-//		return webserviceResponse;
-//	}
+	public UploadFile_AddFileIn_S3_BucketName_ObjectName_Response call_UploadFile_AddFileIn_S3_BucketName_ObjectName_Webservice( UploadFile_AddFileIn_S3_BucketName_ObjectName_Request webserviceRequest ) throws Exception {
+		if ( ! instanceInitialized ) {
+			throw new IllegalStateException( "Not initialized" );
+		}
+		if ( webserviceRequest == null ) {
+			throw new IllegalArgumentException( "webserviceRequest param must not be null in call to call_UploadFile_AddFileIn_S3_BucketName_ObjectName_Webservice(...)" );
+		}
+
+		String webserviceURL = spectralStorageServerBaseURL
+				+ WebserviceFileObjectStoragePathConstants.UPLOAD_FILE_ADD_FILE_IN_S3_BUCKET_NAME_OBJECT_NAME_SERVLET_XML;
+		Object webserviceResponseAsObject = callActualWebserviceOnServerSendObject( webserviceRequest, webserviceURL );
+		if ( ! ( webserviceResponseAsObject instanceof UploadFile_AddFileIn_S3_BucketName_ObjectName_Response ) ) {
+			String msg = "Response unmarshaled to class other than UploadFile_AddFileIn_S3_BucketName_ObjectName_Response.  "
+					+ " Unmarshaled Class: " + webserviceResponseAsObject.getClass();
+			YRCFileObjectStoreWebserviceCallErrorException exception = new YRCFileObjectStoreWebserviceCallErrorException( msg );
+			exception.setFailToDecodeDataReceivedFromServer(true);
+			throw exception;
+		}
+		UploadFile_AddFileIn_S3_BucketName_ObjectName_Response webserviceResponse = null;
+		try {
+			webserviceResponse = (UploadFile_AddFileIn_S3_BucketName_ObjectName_Response) webserviceResponseAsObject;
+		} catch ( Exception e ) {
+			String msg = "Error. Fail to cast response as UploadFile_AddFileIn_S3_BucketName_ObjectName_Response: "
+					+ e.toString();
+			YRCFileObjectStoreWebserviceCallErrorException exception = new YRCFileObjectStoreWebserviceCallErrorException( msg );
+			exception.setFailToDecodeDataReceivedFromServer(true);
+			throw exception;
+		}
+		return webserviceResponse;
+	}
 
 	/**
 	 * @param webserviceRequest
@@ -677,7 +678,7 @@ public class CallYRCFileObjectStoreWebservice {
 			throw new IllegalStateException( "Not initialized" );
 		}
 		if ( webserviceRequest == null ) {
-			throw new IllegalArgumentException( "webserviceRequest param must not be null in call to call_UploadFile_AddFileInS3Bucket_Webservice(...)" );
+			throw new IllegalArgumentException( "webserviceRequest param must not be null in call to call_UploadFile_AddFileFromFilenameAndPath_Webservice(...)" );
 		}
 
 		String webserviceURL = spectralStorageServerBaseURL
@@ -704,7 +705,7 @@ public class CallYRCFileObjectStoreWebservice {
 	}
 
 	/**
-	 * @param scanFile
+	 * @param webserviceRequest
 	 * @return
 	 * @throws Exception 
 	 */
@@ -746,7 +747,85 @@ public class CallYRCFileObjectStoreWebservice {
 		
 		Object webserviceResponseAsObject = 
 				callActualWebserviceOnServerSendByteArrayOrFileAsStreamReturnObject(
-						null /* bytesToSend */, uploadFile, webserviceURL );
+						null /* bytesToSend */,
+						uploadFile, 
+						null /* filename */,
+						null /* file_InputStream */,
+						null /* file_Size */,
+						webserviceURL );
+		
+		if ( ! ( webserviceResponseAsObject instanceof UploadFile_UploadFile_Response ) ) {
+			String msg = "Response unmarshaled to class other than UploadFile_UploadFile_Response.  "
+					+ " Unmarshaled Class: " + webserviceResponseAsObject.getClass();
+			YRCFileObjectStoreWebserviceCallErrorException exception = new YRCFileObjectStoreWebserviceCallErrorException( msg );
+			exception.setFailToDecodeDataReceivedFromServer(true);
+			throw exception;
+		}
+		UploadFile_UploadFile_Response webserviceResponse = null;
+		try {
+			webserviceResponse = (UploadFile_UploadFile_Response) webserviceResponseAsObject;
+		} catch ( Exception e ) {
+			String msg = "Error. Fail to cast response as UploadFile_UploadFile_Response: "
+					+ e.toString();
+			YRCFileObjectStoreWebserviceCallErrorException exception = new YRCFileObjectStoreWebserviceCallErrorException( msg );
+			exception.setFailToDecodeDataReceivedFromServer(true);
+			throw exception;
+		}
+		return webserviceResponse;
+	}
+
+	/**
+	 * @param webserviceRequest
+	 * @return
+	 * @throws Exception 
+	 */
+	public UploadFile_UploadFile_Response call_UploadFile_UploadFile_Pass_Filename_InputStream_Size_Service( UploadFile_UploadFile_Pass_Filename_InputStream_Size_Request webserviceRequest ) throws Exception {
+		
+		
+		if ( ! instanceInitialized ) {
+			throw new IllegalStateException( "Not initialized" );
+		}
+		
+		if ( webserviceRequest == null ) {
+			throw new IllegalArgumentException( "webserviceRequest param must not be null in call to call_UploadFile_UploadFile_Service(...)" );
+		}
+		
+		/////
+		
+		if ( webserviceRequest.getFile_InputStream() == null ) {
+			throw new IllegalArgumentException( "'File_InputStream' property in webserviceRequest param must not be null in call to call_UploadFile_UploadFile_Service(...)" );
+		}
+		if ( webserviceRequest.getFile_Size() == null ) {
+			throw new IllegalArgumentException( "'File_Size' property in webserviceRequest param must not be null in call to call_UploadFile_UploadFile_Service(...)" );
+		}
+		if ( webserviceRequest.getFilename() == null || webserviceRequest.getFilename().length() == 0 ) {
+			throw new IllegalArgumentException( "'Filename' property in webserviceRequest param must not be null or empty string in call to call_UploadFile_UploadFile_Service(...)" );
+		}
+		
+		String webserviceURL_Additions = "";
+		
+		if ( webserviceRequest.isGzipCompressContents() ) {
+			
+			webserviceURL_Additions =
+					"?"
+					+ WebserviceFileObjectStorage_QueryParamsConstants.UPLOAD_FILE_GZIP_COMPRESS_CONTENTS_QUERY_PARAM
+					+ "="
+					+ WebserviceFileObjectStorage_QueryParamsConstants.UPLOAD_FILE_GZIP_COMPRESS_CONTENTS_QUERY_PARAM__VALUE_TRUE;
+		}
+		
+		String webserviceURL = spectralStorageServerBaseURL
+				+ WebserviceFileObjectStoragePathConstants.UPLOAD_FILE_UPLOAD_FILE_SERVLET_XML
+				+ webserviceURL_Additions;
+		
+		Object webserviceResponseAsObject = 
+				callActualWebserviceOnServerSendByteArrayOrFileAsStreamReturnObject(
+						null /* bytesToSend */,
+						null /* uploadFile */, 
+						webserviceRequest.getFilename(),
+						webserviceRequest.getFile_InputStream(),
+						webserviceRequest.getFile_Size(),
+						webserviceURL );
+		
 		if ( ! ( webserviceResponseAsObject instanceof UploadFile_UploadFile_Response ) ) {
 			String msg = "Response unmarshaled to class other than UploadFile_UploadFile_Response.  "
 					+ " Unmarshaled Class: " + webserviceResponseAsObject.getClass();
@@ -816,7 +895,14 @@ public class CallYRCFileObjectStoreWebservice {
 		}
 		
 		return callActualWebserviceOnServerSendByteArrayOrFileAsStreamReturnObject( 
-				byteArrayOutputStream_ToSend, null /* fileToSendAsStream */, webserviceURL );
+				byteArrayOutputStream_ToSend, 
+				null /* fileToSendAsStream */, 
+				//  File passed in as stream so also add filename and file_Size
+				null /* filename */,
+				null /* file_InputStream */,
+				null /* file_Size */,
+				
+				webserviceURL );
 	}
 	
 	/**
@@ -833,12 +919,19 @@ public class CallYRCFileObjectStoreWebservice {
 	private Object callActualWebserviceOnServerSendByteArrayOrFileAsStreamReturnObject( 
 			ByteArrayOutputStream byteArrayOutputStream_ToSend,
 			File fileToSendAsStream,
+			//  File passed in as stream so also add filename and file_Size
+			String filename,
+			InputStream file_InputStream,
+			Long file_Size,
 			String webserviceURL ) throws Exception {
 
 		byte[] serverResponseByteArray = 
 				sendToServerSendByteArrayOrFileAsStream_GetByteArrayResponseFromServer(
 						byteArrayOutputStream_ToSend,
 						fileToSendAsStream, 
+						filename,
+						file_InputStream,
+						file_Size,
 						webserviceURL );
 		
 		return parse_ServerResponseBytesArray_Return_Object(serverResponseByteArray, webserviceURL);
@@ -854,19 +947,43 @@ public class CallYRCFileObjectStoreWebservice {
 	private byte[] sendToServerSendByteArrayOrFileAsStream_GetByteArrayResponseFromServer(
 			ByteArrayOutputStream byteArrayOutputStream_ToSend,
 			File fileToSendAsStream, 
+			//  File passed in as stream so also add filename and file_Size
+			String filename,
+			InputStream file_InputStream,
+			Long file_Size,
 			String webserviceURL) throws YRCFileObjectStoreWebserviceCallErrorException {
 		
 		byte[] serverResponseByteArray = null;
 		
-		if ( ( ! ( byteArrayOutputStream_ToSend != null || fileToSendAsStream != null ) )
-				|| (  byteArrayOutputStream_ToSend != null && fileToSendAsStream != null)) {
-			String msg = "Exactly one of either byteArrayOutputStream_ToSend or fileToSendAsStream must be not null";
+		if ( 
+				( ! ( byteArrayOutputStream_ToSend != null || fileToSendAsStream != null || file_InputStream != null ) ) // None is != null
+				//  any 2 are not null
+				|| (  byteArrayOutputStream_ToSend != null && fileToSendAsStream != null) 
+				|| (  byteArrayOutputStream_ToSend != null && file_InputStream != null)
+				|| (  file_InputStream != null && fileToSendAsStream != null)
+				) {
+			
+			//  Combination of populated input parameters to method is invalid
+			
+			String msg = "Exactly one of either byteArrayOutputStream_ToSend or fileToSendAsStream or file_InputStream must be not null";
 			YRCFileObjectStoreWebserviceCallErrorException exception = new YRCFileObjectStoreWebserviceCallErrorException( msg );
 			exception.setCallInterfaceInternalError(true);
 			exception.setCallInterfaceInternalErrorMessage(msg);
 			throw exception;
 		}
 		
+		if ( file_InputStream != null 
+				&& ( filename == null || filename.length() == 0 || file_Size == null ) ) {
+
+			//  Combination of populated input parameters to method is invalid
+			
+			String msg = "file_InputStream is not null so filename cannot be null or empty string and file_Size cannot be null";
+			YRCFileObjectStoreWebserviceCallErrorException exception = new YRCFileObjectStoreWebserviceCallErrorException( msg );
+			exception.setCallInterfaceInternalError(true);
+			exception.setCallInterfaceInternalErrorMessage(msg);
+			throw exception;
+		}
+			
 		//  Get number of bytes to send to specify in httpURLConnection.setFixedLengthStreamingMode(...)
 		//  (This causes httpURLConnection to not buffer the sent data to get the length,
 		//   allowing > 2GB to be sent and also no memory is needed for the buffering)
@@ -874,8 +991,10 @@ public class CallYRCFileObjectStoreWebservice {
 		
 		if ( byteArrayOutputStream_ToSend != null ) {
 			numberOfBytesToSend = byteArrayOutputStream_ToSend.size();
-		} else {
+		} else if ( fileToSendAsStream != null ) {
 			numberOfBytesToSend = fileToSendAsStream.length();
+		} else {
+			numberOfBytesToSend = file_Size.longValue();
 		}
 		
 		//   Create object for connecting to server
@@ -945,11 +1064,18 @@ public class CallYRCFileObjectStoreWebservice {
 					byteArrayOutputStream_ToSend.writeTo( outputStream );
 				} else {
 					//  Send file contents to server
-					fileInputStream = new FileInputStream( fileToSendAsStream );
+					InputStream inputStream_LOCAL = file_InputStream;
+					
+					if ( fileToSendAsStream != null ) {
+					
+						fileInputStream = new FileInputStream( fileToSendAsStream );
+						inputStream_LOCAL = fileInputStream;
+					}
+					
 					int byteArraySize = 5000;
 					byte[] data = new byte[ byteArraySize ];
 					while (true) {
-						int bytesRead = fileInputStream.read( data );
+						int bytesRead = inputStream_LOCAL.read( data );
 						if ( bytesRead == -1 ) {  // end of input
 							break;
 						}

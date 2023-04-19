@@ -42,17 +42,20 @@ public class ConfigData_Directories_ProcessUploadInfo_InWorkDirectory {
 	 */
 	private File fileObjectStorage_BaseDirectory;
 
-	// AWS S3 Support commented out.  See file ZZ__AWS_S3_Support_CommentedOut.txt in GIT repo root.
-	
 	/**
-	 * The S3 bucket that the scan data is written to for perm storage
+	 * The S3 bucket that the file data is written to for perm storage
 	 */
-	private String s3Bucket;
+	private String s3Bucket_MainStorage;
 
 	/**
-	 * The S3 region that the scan data is written to for perm storage
+	 * The S3 region that the file data is written to for perm storage
 	 */
-	private String s3Region;
+	private String s3Region_MainStorage;
+
+	/**
+	 * The S3 bucket that the incoming file data is written to for temporary storage
+	 */
+	private String s3Bucket_TemporaryInputFileStorage;
 
 
 	
@@ -77,20 +80,28 @@ public class ConfigData_Directories_ProcessUploadInfo_InWorkDirectory {
 		this.submittedFilePathRestrictions = submittedFilePathRestrictions;
 	}
 
-	public String getS3Bucket() {
-		return s3Bucket;
+	public String getS3Bucket_MainStorage() {
+		return s3Bucket_MainStorage;
 	}
 
-	public void setS3Bucket(String s3Bucket) {
-		this.s3Bucket = s3Bucket;
+	public void setS3Bucket_MainStorage(String s3Bucket_MainStorage) {
+		this.s3Bucket_MainStorage = s3Bucket_MainStorage;
 	}
 
-	public String getS3Region() {
-		return s3Region;
+	public String getS3Region_MainStorage() {
+		return s3Region_MainStorage;
 	}
 
-	public void setS3Region(String s3Region) {
-		this.s3Region = s3Region;
+	public void setS3Region_MainStorage(String s3Region_MainStorage) {
+		this.s3Region_MainStorage = s3Region_MainStorage;
+	}
+
+	public String getS3Bucket_TemporaryInputFileStorage() {
+		return s3Bucket_TemporaryInputFileStorage;
+	}
+
+	public void setS3Bucket_TemporaryInputFileStorage(String s3Bucket_TemporaryInputFileStorage) {
+		this.s3Bucket_TemporaryInputFileStorage = s3Bucket_TemporaryInputFileStorage;
 	}
 	
 }

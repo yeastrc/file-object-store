@@ -12,7 +12,7 @@ public class WebserviceFileObjectStoragePathConstants {
 	
 	//  Servlets - Processing  File Upload and Returning Status and API Key
 	
-	public static final String UPLOAD_FILE_ADD_FILE_IN_S3_BUCKET_SERVLET_XML = "/update/uploadFile_addFileInS3Bucket_XML";
+	public static final String UPLOAD_FILE_ADD_FILE_IN_S3_BUCKET_NAME_OBJECT_NAME_SERVLET_XML = "/update/uploadFile_add_S3_BucketName_ObjectName_XML";
 
 	public static final String UPLOAD_FILE_ADD_FILENAME_WITH_PATH_SERVLET_XML = "/update/uploadFile_addFilenameWithPath_XML";
 	

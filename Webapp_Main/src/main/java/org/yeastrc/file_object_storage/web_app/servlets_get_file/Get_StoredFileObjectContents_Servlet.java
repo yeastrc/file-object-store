@@ -21,16 +21,17 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;  import org.slf4j.Logger;
 import org.yeastrc.file_object_storage.web_app.config.ConfigData_Directories_ProcessUploadInfo_InWorkDirectory;
+import org.yeastrc.file_object_storage.web_app.constants_enums.FileUploadConstants;
 import org.yeastrc.file_object_storage.web_app.constants_enums.ServetResponseFormatEnum;
 import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageBadRequestToServletException;
 import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageDeserializeRequestException;
-import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageFileUploadInternalException;
 import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageSerializeRequestException;
 import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageWebappConfigException;
 import org.yeastrc.file_object_storage.web_app.exceptions.FileObjectStorageWebappInternalException;
 import org.yeastrc.file_object_storage.web_app.file_storage_local_filesystem.StorageDir_OnLocalFileSystem_CreateToStoreFileIn;
 import org.yeastrc.file_object_storage.web_app.file_storage_local_filesystem.StorageDir_OnLocalFileSystem_CreateToStoreFileIn.StorageDir_OnLocalFileSystem_CreateToStoreFileIn__CreateSubdirIfNotExists_ENUM;
 import org.yeastrc.file_object_storage.web_app.meta_file_read_write_contents.MetaFileContents;
+import org.yeastrc.file_object_storage.web_app.meta_file_read_write_contents.MetaFileContents_ReadFromInputStream;
 import org.yeastrc.file_object_storage.web_app.servlets_common.GetRequestObjectFromInputStream;
 import org.yeastrc.file_object_storage.web_app.servlets_common.Get_ServletResultDataFormat_FromServletInitParam;
 import org.yeastrc.file_object_storage.web_app.servlets_common.WriteResponseStringToOutputStream;
@@ -39,6 +40,14 @@ import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_r
 import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.Get_StoredFileObjectContents_Response_InHeader;
 import org.yeastrc.file_object_storage.web_app.utils.Storage_Object_Name__Create;
 import org.yeastrc.file_object_storage.web_app.utils.Storage_Object_Name__Create.Storage_Object_Name__Create__Result__MainName;
+
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 
 /**
@@ -142,8 +151,16 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 		}
 		
 		try {
-		
-			processRequest( get_StoredFileObjectContents_Request, request, response );
+
+			if ( StringUtils.isNotEmpty( ConfigData_Directories_ProcessUploadInfo_InWorkDirectory.getSingletonInstance().getS3Bucket_MainStorage() ) ) {
+				
+				processRequest_DataIn_AWS_S3( get_StoredFileObjectContents_Request, request, response );
+				
+			} else {
+			
+				processRequest_DataOn_LocalFileSystem( get_StoredFileObjectContents_Request, request, response );
+			
+			}
 			
 		} catch (Throwable e) {
 
@@ -163,7 +180,7 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 	 * @param httpServletResponse
 	 * @throws Exception 
 	 */
-	private void processRequest( 
+	private void processRequest_DataOn_LocalFileSystem( 
 			
 			Get_StoredFileObjectContents_Request get_StoredFileObjectContents_Request,
 			HttpServletRequest httpServletRequest, 
@@ -171,19 +188,6 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 		
 		try {
 
-			////////////////////
-			
-
-			//  ASSUMED:  Past this point only local storage is assumed.  NO support of S3 
-
-
-			if ( StringUtils.isNotEmpty( ConfigData_Directories_ProcessUploadInfo_InWorkDirectory.getSingletonInstance().getS3Bucket() ) ) {
-				
-				String msg = "S3 is NOT Supported at this time";
-				log.error(msg);
-				throw new FileObjectStorageFileUploadInternalException(msg);
-			}
-			
 			//////
 
 			Storage_Object_Name__Create__Result__MainName storage_Object_Name__Create__Result =
@@ -384,6 +388,305 @@ public class Get_StoredFileObjectContents_Servlet extends HttpServlet {
 		}
 	}
 	
+
+	/**
+	 * @param get_StoredFileObjectContents_Request
+	 * @param httpServletRequest
+	 * @param httpServletResponse
+	 * @throws Exception 
+	 */
+	private void processRequest_DataIn_AWS_S3( 
+			
+			Get_StoredFileObjectContents_Request get_StoredFileObjectContents_Request,
+			HttpServletRequest httpServletRequest, 
+			HttpServletResponse httpServletResponse) throws Exception {
+		
+		try {
+			boolean webservice_Request__ReturnAs_GZIP_IfAvailable = false;
+			
+			if ( get_StoredFileObjectContents_Request.getReturnAs_GZIP_IfAvailable() != null
+					&& get_StoredFileObjectContents_Request.getReturnAs_GZIP_IfAvailable().booleanValue()
+					) {	
+		
+				webservice_Request__ReturnAs_GZIP_IfAvailable = true;
+			}
+			
+			S3Client amazonS3_Client_ForOutput = null;
+			
+			{  // Use Region from Config, otherwise SDK use from Environment Variable
+
+				final String amazonS3_RegionName = 
+						ConfigData_Directories_ProcessUploadInfo_InWorkDirectory.getSingletonInstance().getS3Region_MainStorage();
+
+				if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+					
+					Region aws_S3_Region = Region.of(amazonS3_RegionName);
+					
+					amazonS3_Client_ForOutput = 
+							S3Client.builder()
+							.region( aws_S3_Region )
+							.httpClientBuilder(ApacheHttpClient.builder())
+							.build();
+				} else {
+					//  SDK use Region from Environment Variable
+					
+					amazonS3_Client_ForOutput = 
+							S3Client.builder()
+							.httpClientBuilder(ApacheHttpClient.builder())
+							.build(); 
+				}
+			}
+			
+			boolean have_GZIP_MainContents_S3_Object = false;
+			
+			Internal__AWS_S3_GetObjectResponse_Class internal__AWS_S3_GetObjectResponse_Class = null;
+			
+			try {
+
+				{	//  Get the AWS S3 Response for the main Object.
+
+					Storage_Object_Name__Create__Result__MainName storage_Object_Name__Create__Result =
+							Storage_Object_Name__Create.create_Main_Storage_Object_Name( get_StoredFileObjectContents_Request.getFileAPIKey() );
+
+					if ( webservice_Request__ReturnAs_GZIP_IfAvailable ) {
+
+						//  Prefer GZIP response so look for GZIP first
+
+						try {  // Get using GZIP object name
+
+							internal__AWS_S3_GetObjectResponse_Class = 
+									this.get__Internal__AWS_S3_GetObjectResponse_Class( 
+											storage_Object_Name__Create__Result.getGzipObjectname(), amazonS3_Client_ForOutput
+											);
+
+							have_GZIP_MainContents_S3_Object = true;
+
+						} catch ( NoSuchKeyException e ) {
+							//  EAT Exception
+						}
+
+						if ( internal__AWS_S3_GetObjectResponse_Class == null ) {
+
+							//  NOT FOUND
+
+							try {  // Get using NNOT GZIP object name
+
+								internal__AWS_S3_GetObjectResponse_Class = 
+										this.get__Internal__AWS_S3_GetObjectResponse_Class( 
+												storage_Object_Name__Create__Result.getMainObjectname(), amazonS3_Client_ForOutput
+												);
+
+
+							} catch ( NoSuchKeyException e ) {
+								//  EAT Exception
+							}
+						}
+
+					} else {
+
+						//  NOT Prefer GZIP response so look for Not GZIP first
+
+						try {  // Get using NNOT GZIP object name
+
+							internal__AWS_S3_GetObjectResponse_Class = 
+									this.get__Internal__AWS_S3_GetObjectResponse_Class( 
+											storage_Object_Name__Create__Result.getMainObjectname(), amazonS3_Client_ForOutput
+											);
+
+
+						} catch ( NoSuchKeyException e ) {
+							//  EAT Exception
+						}
+
+						if ( internal__AWS_S3_GetObjectResponse_Class == null ) {
+
+							//  NOT FOUND
+
+							try {  // Get using GZIP object name
+
+								internal__AWS_S3_GetObjectResponse_Class = 
+										this.get__Internal__AWS_S3_GetObjectResponse_Class( 
+												storage_Object_Name__Create__Result.getGzipObjectname(), amazonS3_Client_ForOutput
+												);
+
+								have_GZIP_MainContents_S3_Object = true;
+
+							} catch ( NoSuchKeyException e ) {
+								//  EAT Exception
+							}
+						}
+
+					}
+
+					if ( internal__AWS_S3_GetObjectResponse_Class == null ) {
+
+						//  Neither is found so return the 404 NOT FOUND
+
+						httpServletResponse.setStatus( HttpServletResponse.SC_NOT_FOUND /* 404  */ );
+
+						Get_StoredFileObjectContents_Response_InHeader responseInHeader = new Get_StoredFileObjectContents_Response_InHeader();
+						responseInHeader.setFileAPIKey_NOT_FOUND(true);
+						this.addHeader_ToResponse( responseInHeader, httpServletResponse );
+
+						return;  // EARLY EXIT
+					}
+				}
+
+				long responseContentLength = 0;
+
+				{
+					GetObjectResponse getObjectResponse = internal__AWS_S3_GetObjectResponse_Class.getObjectResponseMainObject_UsableAs_InputStream.response();
+					if ( getObjectResponse == null ) {
+						String msg = "internal__AWS_S3_GetObjectResponse_Class.getObjectResponseMainObject_UsableAs_InputStream.response() returned null";
+						log.error(msg);
+						throw new FileObjectStorageWebappConfigException(msg);
+					}
+
+					Long contentLength = getObjectResponse.contentLength();
+
+					if ( contentLength == null ) {
+						String msg = "internal__AWS_S3_GetObjectResponse_Class.getObjectResponseMainObject_UsableAs_InputStream.response().contentLength() returned null";
+						log.error(msg);
+						throw new FileObjectStorageWebappConfigException(msg); 
+					}
+
+					responseContentLength = contentLength.longValue();
+				}
+
+				Get_StoredFileObjectContents_Response_InHeader responseInHeader = new Get_StoredFileObjectContents_Response_InHeader();
+
+				if ( webservice_Request__ReturnAs_GZIP_IfAvailable && have_GZIP_MainContents_S3_Object ) {
+					responseInHeader.setResponse_Is_GZIP( true );
+				}
+
+
+				if ( have_GZIP_MainContents_S3_Object ) {
+
+					//  Get Meta Data to return original file length since have GZIP file and will return NOT GZIP data
+
+					String metaFilename = Storage_Object_Name__Create.create_GZIP_MetaData_Storage_Object_Name( get_StoredFileObjectContents_Request.getFileAPIKey() );
+
+					try {
+						String s3_Object_Key__metaFilename = FileUploadConstants.FILE_OBJECT_STORAGE__MAIN_STORAGE_BASE_DIR + "/" + metaFilename;
+
+						GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+								.bucket(ConfigData_Directories_ProcessUploadInfo_InWorkDirectory.getSingletonInstance().getS3Bucket_MainStorage())
+								.key(s3_Object_Key__metaFilename)
+								.build();
+
+						ResponseInputStream<GetObjectResponse> getObjectResponse__CanUseAs_InputStream =
+								amazonS3_Client_ForOutput.getObject(getObjectRequest );
+
+						MetaFileContents metaFileContents = MetaFileContents_ReadFromInputStream.readFromInputStream(getObjectResponse__CanUseAs_InputStream);
+
+						if ( metaFileContents.getOriginalFileSize() == null ) {
+
+							//  No Original File Size in MetaFile and need original file size
+
+							String msg = "No Original File Size in MetaFile and need original file size.  File API Key: " + get_StoredFileObjectContents_Request.getFileAPIKey();
+							log.error(msg);
+							throw new FileObjectStorageWebappInternalException(msg);
+						}
+
+						responseInHeader.setFileLength_NonGZIP( metaFileContents.getOriginalFileSize() );
+
+						if ( ( ! webservice_Request__ReturnAs_GZIP_IfAvailable ) && have_GZIP_MainContents_S3_Object ) {
+
+							responseContentLength = metaFileContents.getOriginalFileSize();
+						}
+
+					} catch ( NoSuchKeyException e ) {
+
+						//  No MetaFile and need original file size
+
+						String msg = "No MetaFile and need original file size.  File API Key: " + get_StoredFileObjectContents_Request.getFileAPIKey();
+						log.error(msg);
+						throw new FileObjectStorageWebappInternalException(msg);
+					}
+				}
+
+				//  Copy file to response
+
+				httpServletResponse.setContentLengthLong(responseContentLength);
+
+				this.addHeader_ToResponse( responseInHeader, httpServletResponse );
+
+				try ( OutputStream outputStream = httpServletResponse.getOutputStream() ) {
+
+					InputStream inputStream = internal__AWS_S3_GetObjectResponse_Class.getObjectResponseMainObject_UsableAs_InputStream;
+							
+					if ( ( ! webservice_Request__ReturnAs_GZIP_IfAvailable ) && have_GZIP_MainContents_S3_Object ) {
+
+						inputStream = new GZIPInputStream(inputStream);
+					}
+
+					byte[] byteBuffer = new byte[ COPY_FILE_ARRAY_SIZE ];
+					int bytesRead;
+
+					while ( ( bytesRead = inputStream.read( byteBuffer ) ) > 0 ){
+
+						outputStream.write( byteBuffer, 0, bytesRead );
+					}
+				} catch ( Exception e ) {
+
+					String msg = "Failed writing request to API Key: " + get_StoredFileObjectContents_Request.getFileAPIKey();
+					log.error(msg, e);
+
+					throw new FileObjectStorageWebappInternalException(msg);
+				}
+			} finally { 
+				
+				if ( internal__AWS_S3_GetObjectResponse_Class != null ) {
+					
+					internal__AWS_S3_GetObjectResponse_Class.getObjectResponseMainObject_UsableAs_InputStream.close();
+				}
+				
+			}
+			
+		} finally {
+			
+		}
+	}
+	
+	/**
+	 * Response for Get Object
+	 *
+	 */
+	private static class Internal__AWS_S3_GetObjectResponse_Class {
+		
+		ResponseInputStream<GetObjectResponse> getObjectResponseMainObject_UsableAs_InputStream;
+		
+	}
+	
+	private Internal__AWS_S3_GetObjectResponse_Class get__Internal__AWS_S3_GetObjectResponse_Class(
+			
+			String objectName_WithoutPrefix,
+			S3Client amazonS3_Client_ForOutput
+			) {
+
+		String s3_Object_Key = FileUploadConstants.FILE_OBJECT_STORAGE__MAIN_STORAGE_BASE_DIR + "/" + objectName_WithoutPrefix;
+
+		GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+				.bucket(ConfigData_Directories_ProcessUploadInfo_InWorkDirectory.getSingletonInstance().getS3Bucket_MainStorage())
+				.key(s3_Object_Key)
+				.build();
+
+		ResponseInputStream<GetObjectResponse> getObjectResponse__CanUseAs_InputStream =
+				amazonS3_Client_ForOutput.getObject(getObjectRequest );
+
+
+		Internal__AWS_S3_GetObjectResponse_Class response = new Internal__AWS_S3_GetObjectResponse_Class();
+		response.getObjectResponseMainObject_UsableAs_InputStream = getObjectResponse__CanUseAs_InputStream;
+		
+		return response;
+	}
+	
+	
+	
+	
+	////////////////////////////////////////////////
+	////////////////////////////////////////////////
+	////////////////////////////////////////////////
 	
 	/**
 	 * @param responseInHeader

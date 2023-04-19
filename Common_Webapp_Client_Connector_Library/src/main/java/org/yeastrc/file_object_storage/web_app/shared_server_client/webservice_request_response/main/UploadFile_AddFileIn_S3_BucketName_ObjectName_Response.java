@@ -6,12 +6,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Response from UploadFile_Init_Servlet
+ * Response from 
  *
  */
-@XmlRootElement(name="uploadFile_AddFileInS3Bucket_Response")
+@XmlRootElement(name="uploadFile_AddFileIn_S3_BucketName_ObjectName_Response")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class UploadFile_AddFileInS3Bucket_Response {
+public class UploadFile_AddFileIn_S3_BucketName_ObjectName_Response {
 	
 	// Properties as XML elements
 	

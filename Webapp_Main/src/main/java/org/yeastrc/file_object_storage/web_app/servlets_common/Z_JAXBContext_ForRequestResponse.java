@@ -37,8 +37,8 @@ public class Z_JAXBContext_ForRequestResponse {
 
 		jaxbContext = 
 				JAXBContext.newInstance( 
-						UploadFile_AddFileInS3Bucket_Request.class,
-						UploadFile_AddFileInS3Bucket_Response.class,
+						UploadFile_AddFileIn_S3_BucketName_ObjectName_Request.class,
+						UploadFile_AddFileIn_S3_BucketName_ObjectName_Response.class,
 						UploadFile_AddFileFromFilenameAndPath_Request.class,
 						UploadFile_AddFileFromFilenameAndPath_Response.class,
 						UploadFile_UploadFile_Response.class,
