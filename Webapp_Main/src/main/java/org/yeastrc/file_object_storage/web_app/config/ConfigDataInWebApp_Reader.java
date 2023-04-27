@@ -158,17 +158,17 @@ public class ConfigDataInWebApp_Reader {
 				}
 			}
 
-			if ( configFilesDirectory == null ) {
-
-				String msg = "Config Files Directory value NOT FOUND in environement variable '" + YRC_FILE_OBJECT_STORAGE_CONFIG_FILES_DIR__ENV_LABEL 
-						+ "', JVM -D Property '" + YRC_FILE_OBJECT_STORAGE_CONFIG_FILES_DIR__ENV_LABEL 
-						+ "', or in Property '" + PROPERTY_NAME__WEBAPP_CONFIG_FILES_DIRECTORY 
-						+ "' in config file '"
-						+ CONFIG_FILENAME
-						+ "'.  Config file searched for using base of class path.";
-				log.error( msg );
-				throw new FileObjectStorageWebappConfigException( msg );
-			}
+//			if ( configFilesDirectory == null ) {
+//
+//				String msg = "Config Files Directory value NOT FOUND in environement variable '" + YRC_FILE_OBJECT_STORAGE_CONFIG_FILES_DIR__ENV_LABEL 
+//						+ "', JVM -D Property '" + YRC_FILE_OBJECT_STORAGE_CONFIG_FILES_DIR__ENV_LABEL 
+//						+ "', or in Property '" + PROPERTY_NAME__WEBAPP_CONFIG_FILES_DIRECTORY 
+//						+ "' in config file '"
+//						+ CONFIG_FILENAME
+//						+ "'.  Config file searched for using base of class path.";
+//				log.error( msg );
+//				throw new FileObjectStorageWebappConfigException( msg );
+//			}
 
 			configDataInWebApp.setConfigFilesDirectory( configFilesDirectory );
 
