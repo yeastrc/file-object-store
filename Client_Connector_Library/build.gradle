@@ -46,8 +46,10 @@ repositories {
     mavenCentral()
 }
 
+//  NO LONGER USED: shadowJar
+
 //  Set default task for this build.gradle file
-defaultTasks 'shadowJar'
+// defaultTasks 'shadowJar'
 
 
 
@@ -100,7 +102,6 @@ println("GIT Tag at HEAD: " + repoTagName )
 
 jar {
     manifest {
-        attributes 'Main-Class': 'fake.not.really.a.runnable.jar'
         attributes([ 'Project-Title': project.name,
         			'Project-URL' : 'https://github.com/yeastrc/Spectral_Storage_Service',
 					'Build-Timestamp': new Date().format("yyyy-MM-dd HH:mm:ssZ"),
@@ -111,16 +112,24 @@ jar {
     }
 }
 
-//  For creating runnable jar
-processResources {
-    from ('src/main/resources') {
-        include '**/*'
-    }
-}
+//  NO LONGER USED.  Was under jar { manifest {
+//           attributes 'Main-Class': 'fake.not.really.a.runnable.jar'
 
-shadowJar {
-    baseName = 'file_object_store_client_connector_code'
-    classifier = null
-    version = null
-}
+
+//  NO LONGER USED: processResources
+
+//  //  For creating runnable jar
+//  processResources {
+//      from ('src/main/resources') {
+//          include '**/*'
+//      }
+//  }
+
+//  NO LONGER USED: shadowJar
+
+// shadowJar {
+//     baseName = 'file_object_store_client_connector_code'
+//     classifier = null
+//     version = null
+// }
 

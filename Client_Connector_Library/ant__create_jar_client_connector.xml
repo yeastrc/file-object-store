@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Client Connector Jar: Create Jar using Gradle task shadowJar">
+<project default="create_run_jar" name="Client Connector Jar: Build local Jar and Combine with dependent jar to deploy subdir">
 
 	<!--  Runs Gradle (gradlew or gradlew.bat 
 		 with correct task 'shadowJar' to create runnable jar -->
@@ -13,6 +13,11 @@
 	<!-- Clean the build directory -->
 	<!-- ================================================================================== -->
     <target name="create_run_jar" description="Do build">
+
+    	<delete dir="deploy" />
+    	<mkdir dir="deploy" />
+    	
+    	<ant antfile="ant__create_jar_common_client_connector_library.xml"  dir="../Common_Webapp_Client_Connector_Library" />
     	
 		<exec executable="${executableToRun_Client_Connector}" dir="." failonerror="true" 
 		    resolveexecutable="true" >
@@ -23,10 +28,27 @@
 		    On Unix systems, if you only want to allow execution of 
 		    commands in the user's path, set this to false. since Ant 1.6
 		    -->
-			<arg value="shadowJar" />
+			<arg value="build" />
+				<!--
+				<arg value="shadowJar" />
+				-->
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 
+    	<jar
+    		filesetmanifest="merge"	
+    		destfile="deploy${file.separator}file_object_store_client_connector_code.jar"
+		>
+    	  <zipgroupfileset dir="build${file.separator}libs" includes="Client_Connector_Library.jar" />
+    		<zipgroupfileset dir="../Common_Webapp_Client_Connector_Library${file.separator}build${file.separator}libs" includes="Common_Webapp_Client_Connector_Library.jar" />
+    	  <!-- other options -->
+    			 <!-- 
+    	  <manifest>
+    	    <attribute name="Main-Class" value="Main.MainClass" />
+    	  </manifest>
+    			  -->
+    	</jar>
+    	
     	
     </target>
 	
